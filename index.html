@@ -17,8 +17,18 @@
     body { margin: 0; font-family: 'Inter', sans-serif; color: var(--ink); background: var(--parchment); }
     .layout { display: flex; min-height: 100vh; }
 
-    aside { width: 220px; flex-shrink: 0; background: var(--navy); padding: 28px 16px; display: flex; flex-direction: column; gap: 28px; }
-    .logo { font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; color: var(--parchment); margin: 0; padding: 0 8px; }
+    aside { width: 230px; flex-shrink: 0; background: var(--navy); padding: 24px 16px; display: flex; flex-direction: column; gap: 22px; }
+    .logo { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; color: var(--parchment); margin: 0; padding: 0 8px; }
+
+    .maison-actuelle { padding: 10px 8px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .nom-maison { color: white; font-family: 'Fraunces', serif; font-size: 15px; margin: 0 0 8px; }
+    .actions-maison { display: flex; gap: 10px; }
+    .lien-discret-clair {
+        background: none; border: none; color: rgba(255,255,255,0.55); font-size: 12.5px;
+        cursor: pointer; padding: 0; text-decoration: underline;
+    }
+    .lien-discret-clair:hover { color: white; }
+
     nav { display: flex; flex-direction: column; gap: 4px; }
     nav button {
         display: flex; align-items: center; gap: 10px; text-align: left;
@@ -33,7 +43,7 @@
     nav button[data-tab="planning"].actif { background: var(--blue); }
     nav button[data-tab="taches"].actif { background: var(--terracotta); }
 
-    main { flex: 1; padding: 40px 36px 60px; max-width: 920px; }
+    main { flex: 1; padding: 40px 36px 60px; max-width: 960px; }
     .onglet { display: none; animation: apparition 0.25s ease; }
     .onglet.actif { display: block; }
     @keyframes apparition { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -74,9 +84,13 @@
     .supprimer { background: none; border: none; color: var(--ink-soft); font-size: 16px; cursor: pointer; padding: 4px 8px; }
     .supprimer:hover { color: var(--terracotta); }
     .a-venir { color: var(--ink-soft); font-size: 15px; line-height: 1.6; padding: 20px 0; }
+    .note-info {
+        font-size: 13px; color: var(--ink-soft); background: #F1ECDF; padding: 10px 14px;
+        border-radius: 8px; margin-bottom: 20px;
+    }
 
     /* ---- Sous-navigation Courses ---- */
-    .sous-nav { display: flex; gap: 8px; margin-bottom: 22px; }
+    .sous-nav { display: flex; gap: 8px; margin-bottom: 18px; }
     .sous-onglet-btn {
         padding: 10px 16px; border-radius: 20px; border: 1px solid #E3DBC9; background: white;
         font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink-soft); cursor: pointer;
@@ -86,15 +100,15 @@
     .sous-onglet.actif { display: block; }
 
     .ajout-zone-courses {
-        display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; align-items: center;
+        display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
         background: white; padding: 14px; border-radius: 10px;
     }
     .ajout-zone-courses input[name="nom"] { flex: 2; min-width: 160px; }
     .ajout-zone-courses input[name="quantite"] { width: 90px; }
-    .ajout-zone-courses select { flex: 1; min-width: 150px; }
+    .ajout-zone-courses select { flex: 1; min-width: 190px; }
     .ajout-zone-courses input[name="note"] { flex: 2; min-width: 180px; }
 
-    .groupe-categorie { margin-bottom: 22px; }
+    .groupe-categorie { margin-bottom: 20px; }
     .groupe-categorie h3 {
         font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; margin: 0 0 8px 2px; color: var(--ink-soft);
     }
@@ -102,6 +116,7 @@
         font-size: 12.5px; color: var(--ink-soft); background: #F1ECDF; padding: 2px 8px; border-radius: 10px; margin-left: 4px;
     }
     .note-article { font-size: 12.5px; color: var(--ink-soft); font-style: italic; display: block; }
+    .expire-note { font-size: 11.5px; color: var(--ink-soft); }
 
     /* ---- Planning ---- */
     .carte-enfant { background: white; border-radius: 10px; padding: 22px; margin-bottom: 28px; border-top: 3px solid var(--blue); }
@@ -137,10 +152,42 @@
     .evenement strong { display: block; font-weight: 600; }
     .evenement span.heure-evt { font-size: 10.5px; opacity: 0.75; }
 
+    /* ---- Écran de sélection de maison ---- */
+    .ecran-maison {
+        position: fixed; inset: 0; background: var(--navy); z-index: 100;
+        display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .ecran-maison.cachee { display: none; }
+    .carte-maison {
+        background: var(--parchment); border-radius: 14px; padding: 32px; max-width: 400px;
+        width: 100%; position: relative; max-height: 90vh; overflow-y: auto;
+    }
+    .carte-maison .logo-ecran {
+        font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; margin: 0 0 4px;
+    }
+    .carte-maison h2 { font-size: 17px; margin: 0 0 18px; color: var(--ink-soft); font-weight: 500; font-family: 'Inter', sans-serif; }
+    .carte-maison h3 { font-family: 'Fraunces', serif; font-size: 16px; margin: 0 0 12px; }
+    .fermer-ecran {
+        position: absolute; top: 18px; right: 18px; background: none; border: none;
+        font-size: 18px; color: var(--ink-soft); cursor: pointer;
+    }
+    .champ-maison { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .champ-maison label { font-size: 13px; color: var(--ink-soft); }
+    .champ-maison input, .champ-maison select { width: 100%; }
+    .separateur-ou {
+        text-align: center; color: var(--ink-soft); font-size: 13px; margin: 22px 0;
+        position: relative;
+    }
+    .separateur-ou::before, .separateur-ou::after {
+        content: ""; position: absolute; top: 50%; width: 40%; height: 1px; background: #E3DBC9;
+    }
+    .separateur-ou::before { left: 0; }
+    .separateur-ou::after { right: 0; }
+    .erreur-code { color: var(--terracotta); font-size: 13px; margin: 8px 0 0; min-height: 16px; }
+
     @media (max-width: 700px) {
         .layout { flex-direction: column; }
-        aside { width: 100%; flex-direction: row; align-items: center; padding: 16px; gap: 16px; overflow-x: auto; }
-        nav { flex-direction: row; }
+        aside { width: 100%; flex-direction: column; padding: 16px; gap: 14px; }
         main { padding: 28px 20px 50px; }
         .tuiles { grid-template-columns: 1fr; }
     }
@@ -148,9 +195,49 @@
 </head>
 <body>
 
+<!-- ============ ÉCRAN DE SÉLECTION / CRÉATION DE MAISON ============ -->
+<div class="ecran-maison" id="ecranMaison">
+    <div class="carte-maison">
+        <button class="fermer-ecran" id="boutonFermerEcran" onclick="fermerEcranMaison()">✕</button>
+        <p class="logo-ecran">Notre Famille</p>
+        <h2>Choisissez votre espace</h2>
+
+        <div class="champ-maison">
+            <label>Maison</label>
+            <select id="selectMaisonExistante"></select>
+        </div>
+        <div class="champ-maison">
+            <label>Code d'accès</label>
+            <input type="text" id="codeAcces" placeholder="Ex : 1234">
+        </div>
+        <button class="action" onclick="rejoindreMaison()">Entrer</button>
+        <p class="erreur-code" id="erreurCode"></p>
+
+        <div class="separateur-ou">ou</div>
+
+        <h3>Créer une nouvelle maison</h3>
+        <div class="champ-maison">
+            <label>Nom de la maison</label>
+            <input type="text" id="nouveauNomMaison" placeholder="Ex : Maison Julie">
+        </div>
+        <div class="champ-maison">
+            <label>Choisissez un code d'accès</label>
+            <input type="text" id="nouveauCodeMaison" placeholder="Ex : 1234">
+        </div>
+        <button class="action discret" onclick="creerMaison()">Créer la maison</button>
+    </div>
+</div>
+
 <div class="layout">
     <aside>
         <p class="logo">Notre Famille</p>
+        <div class="maison-actuelle">
+            <p class="nom-maison" id="nomMaisonActuelle">–</p>
+            <div class="actions-maison">
+                <button class="lien-discret-clair" onclick="ouvrirEcranMaison()">Changer</button>
+                <button class="lien-discret-clair" onclick="ouvrirEcranMaisonCreation()">+ Nouvelle maison</button>
+            </div>
+        </div>
         <nav>
             <button class="actif" data-tab="accueil" onclick="changerOnglet('accueil', this)">🏠 Accueil</button>
             <button data-tab="courses" onclick="changerOnglet('courses', this)">🛒 Courses</button>
@@ -186,27 +273,19 @@
                 <button class="sous-onglet-btn" data-sous="specifiques" onclick="changerSousOnglet('specifiques', this)">🎁 Achats spécifiques</button>
             </div>
 
-            <!-- Courses de la semaine -->
             <div id="semaine" class="sous-onglet actif">
+                <p class="note-info">Cette liste se réinitialise automatiquement chaque semaine.</p>
                 <div class="ajout-zone-courses">
                     <input type="text" name="nom" id="semaineNom" placeholder="Article (ex : Lait)">
                     <input type="text" name="quantite" id="semaineQuantite" placeholder="Qté (ex : x2)">
-                    <select id="semaineCategorie">
-                        <option value="fruits_legumes">🥦 Fruits & Légumes</option>
-                        <option value="cremerie">🥛 Crémerie</option>
-                        <option value="epicerie">🍞 Épicerie & Boulangerie</option>
-                        <option value="boissons">🥤 Boissons</option>
-                        <option value="hygiene">🧴 Hygiène & Entretien</option>
-                        <option value="surgeles">❄️ Surgelés</option>
-                        <option value="autre">📦 Autre</option>
-                    </select>
+                    <select id="semaineCategorie"></select>
                     <button class="action" onclick="ajouterArticleSemaine()">Ajouter</button>
                 </div>
                 <div id="listeSemaine"></div>
             </div>
 
-            <!-- Achats spécifiques -->
             <div id="specifiques" class="sous-onglet">
+                <p class="note-info">Une fois cochés, ces articles sont automatiquement supprimés après 1 heure.</p>
                 <div class="ajout-zone-courses">
                     <input type="text" name="nom" id="specifiqueNom" placeholder="Article (ex : Livre pour Léa)">
                     <input type="text" name="note" id="specifiqueNote" placeholder="Note (ex : à commander en ligne)">
@@ -235,7 +314,8 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import {
-        getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot
+        getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot,
+        getDocs, getDoc, setDoc
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -250,18 +330,146 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    /* ================= GESTION DES MAISONS ================= */
+    let maisonId = null;
+    let maisonNom = null;
+    let refCoursesSemaine = null;
+    let refSpecifiques = null;
+    let refEnfants = null;
+    let specifiquesActuels = [];
+    let enfantsActuels = [];
+
+    window.fermerEcranMaison = function() {
+        if (maisonId) document.getElementById("ecranMaison").classList.add("cachee");
+    };
+    window.ouvrirEcranMaison = function() {
+        chargerListeMaisons();
+        document.getElementById("ecranMaison").classList.remove("cachee");
+        document.getElementById("boutonFermerEcran").style.display = maisonId ? "block" : "none";
+    };
+    window.ouvrirEcranMaisonCreation = function() {
+        window.ouvrirEcranMaison();
+        document.getElementById("nouveauNomMaison").focus();
+    };
+
+    async function chargerListeMaisons() {
+        const select = document.getElementById("selectMaisonExistante");
+        select.innerHTML = "";
+        const snap = await getDocs(collection(db, "maisons"));
+        if (snap.empty) {
+            select.innerHTML = `<option value="">Aucune maison créée pour l'instant</option>`;
+            return;
+        }
+        snap.forEach(d => {
+            const option = document.createElement("option");
+            option.value = d.id;
+            option.textContent = d.data().nom;
+            select.appendChild(option);
+        });
+    }
+
+    window.rejoindreMaison = async function() {
+        const select = document.getElementById("selectMaisonExistante");
+        const idChoisi = select.value;
+        const code = document.getElementById("codeAcces").value.trim();
+        const erreur = document.getElementById("erreurCode");
+        erreur.textContent = "";
+        if (!idChoisi) { erreur.textContent = "Choisissez une maison."; return; }
+        const snap = await getDoc(doc(db, "maisons", idChoisi));
+        if (!snap.exists() || snap.data().code !== code) {
+            erreur.textContent = "Code incorrect, réessaie.";
+            return;
+        }
+        localStorage.setItem("maisonId", idChoisi);
+        localStorage.setItem("maisonNom", snap.data().nom);
+        location.reload();
+    };
+
+    window.creerMaison = async function() {
+        const nom = document.getElementById("nouveauNomMaison").value.trim();
+        const code = document.getElementById("nouveauCodeMaison").value.trim();
+        if (nom === "" || code === "") {
+            alert("Merci de renseigner un nom et un code.");
+            return;
+        }
+        const ref = await addDoc(collection(db, "maisons"), { nom, code, dateCreation: Date.now() });
+        localStorage.setItem("maisonId", ref.id);
+        localStorage.setItem("maisonNom", nom);
+        location.reload();
+    };
+
+    function getIdSemaineActuelle() {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+        const semaine1 = new Date(d.getFullYear(), 0, 4);
+        const numero = 1 + Math.round(((d - semaine1) / 86400000 - 3 + ((semaine1.getDay() + 6) % 7)) / 7);
+        return `${d.getFullYear()}-S${numero}`;
+    }
+
+    async function verifierResetSemaine() {
+        const metaRef = doc(db, "maisons", maisonId, "meta", "coursesSemaine");
+        const metaSnap = await getDoc(metaRef);
+        const semaineActuelle = getIdSemaineActuelle();
+        if (!metaSnap.exists() || metaSnap.data().semaine !== semaineActuelle) {
+            const items = await getDocs(collection(db, "maisons", maisonId, "coursesSemaine"));
+            const suppressions = [];
+            items.forEach(d => suppressions.push(deleteDoc(d.ref)));
+            await Promise.all(suppressions);
+            await setDoc(metaRef, { semaine: semaineActuelle });
+        }
+    }
+
+    async function initMaison(id, nom) {
+        maisonId = id;
+        maisonNom = nom;
+        document.getElementById("nomMaisonActuelle").textContent = "🏠 " + nom;
+        document.getElementById("ecranMaison").classList.add("cachee");
+
+        await verifierResetSemaine();
+
+        refCoursesSemaine = collection(db, "maisons", maisonId, "coursesSemaine");
+        refSpecifiques = collection(db, "maisons", maisonId, "achatsSpecifiques");
+        refEnfants = collection(db, "maisons", maisonId, "enfants");
+
+        demarrerEcouteCoursesSemaine();
+        demarrerEcouteSpecifiques();
+        demarrerEcouteEnfants();
+
+        setInterval(verifierExpirationSpecifiques, 60000);
+    }
+
     /* ================= COURSES : SEMAINE (par catégorie) ================= */
-    const semaineRef = collection(db, "coursesSemaine");
     const CATEGORIES = {
         fruits_legumes: "🥦 Fruits & Légumes",
+        viandes_poissons: "🥩 Viandes & Poissons",
         cremerie: "🥛 Crémerie",
-        epicerie: "🍞 Épicerie & Boulangerie",
+        oeufs: "🥚 Œufs",
+        boulangerie: "🥖 Boulangerie & Pâtisserie",
+        epicerie_salee: "🍝 Épicerie salée",
+        epicerie_sucree: "🍫 Épicerie sucrée & Confiseries",
+        biscuits_cereales: "🥣 Biscuits & Céréales",
         boissons: "🥤 Boissons",
-        hygiene: "🧴 Hygiène & Entretien",
+        alcool: "🍷 Alcool & Apéritif",
         surgeles: "❄️ Surgelés",
+        frais_traiteur: "🧊 Frais & Traiteur",
+        hygiene_beaute: "🧴 Hygiène & Beauté",
+        entretien_maison: "🧽 Entretien & Maison",
+        animaux: "🐾 Animaux",
+        bebe: "👶 Bébé",
         autre: "📦 Autre"
     };
-    const ORDRE_CATEGORIES = ["fruits_legumes","cremerie","epicerie","boissons","hygiene","surgeles","autre"];
+    const ORDRE_CATEGORIES = Object.keys(CATEGORIES);
+
+    (function remplirSelectCategories() {
+        const select = document.getElementById("semaineCategorie");
+        ORDRE_CATEGORIES.forEach(cle => {
+            const option = document.createElement("option");
+            option.value = cle;
+            option.textContent = CATEGORIES[cle];
+            select.appendChild(option);
+        });
+    })();
 
     window.ajouterArticleSemaine = async function() {
         const nomInput = document.getElementById("semaineNom");
@@ -269,7 +477,7 @@
         const categorieSelect = document.getElementById("semaineCategorie");
         const nom = nomInput.value.trim();
         if (nom === "") return;
-        await addDoc(semaineRef, {
+        await addDoc(refCoursesSemaine, {
             nom, quantite: quantiteInput.value.trim(), categorie: categorieSelect.value,
             achete: false, dateAjout: Date.now()
         });
@@ -278,99 +486,121 @@
         nomInput.focus();
     };
     window.toggleAcheteSemaine = async function(id, etatActuel) {
-        await updateDoc(doc(db, "coursesSemaine", id), { achete: !etatActuel });
+        await updateDoc(doc(db, "maisons", maisonId, "coursesSemaine", id), { achete: !etatActuel });
     };
     window.supprimerArticleSemaine = async function(id) {
-        await deleteDoc(doc(db, "coursesSemaine", id));
+        await deleteDoc(doc(db, "maisons", maisonId, "coursesSemaine", id));
     };
 
-    onSnapshot(semaineRef, (snapshot) => {
-        const conteneur = document.getElementById("listeSemaine");
-        conteneur.innerHTML = "";
-        const articles = [];
-        snapshot.forEach((d) => articles.push({ id: d.id, ...d.data() }));
-        articles.sort((a, b) => a.dateAjout - b.dateAjout);
+    function demarrerEcouteCoursesSemaine() {
+        onSnapshot(refCoursesSemaine, (snapshot) => {
+            const conteneur = document.getElementById("listeSemaine");
+            conteneur.innerHTML = "";
+            const articles = [];
+            snapshot.forEach((d) => articles.push({ id: d.id, ...d.data() }));
+            articles.sort((a, b) => a.dateAjout - b.dateAjout);
 
-        ORDRE_CATEGORIES.forEach(cat => {
-            const articlesCat = articles.filter(a => (a.categorie || "autre") === cat);
-            if (articlesCat.length === 0) return;
-
-            const groupe = document.createElement("div");
-            groupe.className = "groupe-categorie";
-            let items = "";
-            articlesCat.forEach(article => {
-                items += `
-                    <li class="${article.achete ? 'achete' : ''}">
-                        <div class="gauche">
-                            <input type="checkbox" ${article.achete ? "checked" : ""}
-                                   onchange="toggleAcheteSemaine('${article.id}', ${article.achete})">
-                            <span class="nom-article">${article.nom}</span>
-                            ${article.quantite ? `<span class="quantite-badge">${article.quantite}</span>` : ""}
-                        </div>
-                        <button class="supprimer" onclick="supprimerArticleSemaine('${article.id}')">✕</button>
-                    </li>
-                `;
+            ORDRE_CATEGORIES.forEach(cat => {
+                const articlesCat = articles.filter(a => (a.categorie || "autre") === cat);
+                if (articlesCat.length === 0) return;
+                const groupe = document.createElement("div");
+                groupe.className = "groupe-categorie";
+                let items = "";
+                articlesCat.forEach(article => {
+                    items += `
+                        <li class="${article.achete ? 'achete' : ''}">
+                            <div class="gauche">
+                                <input type="checkbox" ${article.achete ? "checked" : ""}
+                                       onchange="toggleAcheteSemaine('${article.id}', ${article.achete})">
+                                <span class="nom-article">${article.nom}</span>
+                                ${article.quantite ? `<span class="quantite-badge">${article.quantite}</span>` : ""}
+                            </div>
+                            <button class="supprimer" onclick="supprimerArticleSemaine('${article.id}')">✕</button>
+                        </li>
+                    `;
+                });
+                groupe.innerHTML = `<h3>${CATEGORIES[cat]}</h3><ul>${items}</ul>`;
+                conteneur.appendChild(groupe);
             });
-            groupe.innerHTML = `<h3>${CATEGORIES[cat]}</h3><ul>${items}</ul>`;
-            conteneur.appendChild(groupe);
-        });
 
-        document.getElementById("compteurCourses").textContent =
-            articles.filter(a => !a.achete).length + (window._compteurSpecifiques || 0);
-    });
+            window._compteurSemaine = articles.filter(a => !a.achete).length;
+            majCompteurCourses();
+        });
+    }
 
     document.getElementById("semaineNom").addEventListener("keypress", (e) => {
         if (e.key === "Enter") ajouterArticleSemaine();
     });
 
     /* ================= COURSES : ACHATS SPÉCIFIQUES ================= */
-    const specifiquesRef = collection(db, "achatsSpecifiques");
-
     window.ajouterArticleSpecifique = async function() {
         const nomInput = document.getElementById("specifiqueNom");
         const noteInput = document.getElementById("specifiqueNote");
         const nom = nomInput.value.trim();
         if (nom === "") return;
-        await addDoc(specifiquesRef, {
-            nom, note: noteInput.value.trim(), achete: false, dateAjout: Date.now()
+        await addDoc(refSpecifiques, {
+            nom, note: noteInput.value.trim(), achete: false, dateAjout: Date.now(), dateAchat: null
         });
         nomInput.value = "";
         noteInput.value = "";
         nomInput.focus();
     };
     window.toggleAcheteSpecifique = async function(id, etatActuel) {
-        await updateDoc(doc(db, "achatsSpecifiques", id), { achete: !etatActuel });
+        const nouvelEtat = !etatActuel;
+        await updateDoc(doc(db, "maisons", maisonId, "achatsSpecifiques", id), {
+            achete: nouvelEtat,
+            dateAchat: nouvelEtat ? Date.now() : null
+        });
     };
     window.supprimerArticleSpecifique = async function(id) {
-        await deleteDoc(doc(db, "achatsSpecifiques", id));
+        await deleteDoc(doc(db, "maisons", maisonId, "achatsSpecifiques", id));
     };
 
-    onSnapshot(specifiquesRef, (snapshot) => {
-        const liste = document.getElementById("listeSpecifiques");
-        liste.innerHTML = "";
-        const articles = [];
-        snapshot.forEach((d) => articles.push({ id: d.id, ...d.data() }));
-        articles.sort((a, b) => a.dateAjout - b.dateAjout);
+    function demarrerEcouteSpecifiques() {
+        onSnapshot(refSpecifiques, (snapshot) => {
+            specifiquesActuels = [];
+            snapshot.forEach((d) => specifiquesActuels.push({ id: d.id, ...d.data() }));
+            specifiquesActuels.sort((a, b) => a.dateAjout - b.dateAjout);
 
-        articles.forEach((article) => {
-            const li = document.createElement("li");
-            if (article.achete) li.classList.add("achete");
-            li.innerHTML = `
-                <div class="gauche">
-                    <input type="checkbox" ${article.achete ? "checked" : ""}
-                           onchange="toggleAcheteSpecifique('${article.id}', ${article.achete})">
-                    <div>
-                        <span class="nom-article">${article.nom}</span>
-                        ${article.note ? `<span class="note-article">${article.note}</span>` : ""}
+            const liste = document.getElementById("listeSpecifiques");
+            liste.innerHTML = "";
+            specifiquesActuels.forEach((article) => {
+                const li = document.createElement("li");
+                if (article.achete) li.classList.add("achete");
+                li.innerHTML = `
+                    <div class="gauche">
+                        <input type="checkbox" ${article.achete ? "checked" : ""}
+                               onchange="toggleAcheteSpecifique('${article.id}', ${article.achete})">
+                        <div>
+                            <span class="nom-article">${article.nom}</span>
+                            ${article.note ? `<span class="note-article">${article.note}</span>` : ""}
+                            ${article.achete ? `<span class="expire-note">Sera supprimé automatiquement dans l'heure</span>` : ""}
+                        </div>
                     </div>
-                </div>
-                <button class="supprimer" onclick="supprimerArticleSpecifique('${article.id}')">✕</button>
-            `;
-            liste.appendChild(li);
-        });
+                    <button class="supprimer" onclick="supprimerArticleSpecifique('${article.id}')">✕</button>
+                `;
+                liste.appendChild(li);
+            });
 
-        window._compteurSpecifiques = articles.filter(a => !a.achete).length;
-    });
+            window._compteurSpecifiques = specifiquesActuels.filter(a => !a.achete).length;
+            majCompteurCourses();
+        });
+    }
+
+    function verifierExpirationSpecifiques() {
+        const maintenant = Date.now();
+        specifiquesActuels.forEach(a => {
+            if (a.achete && a.dateAchat && (maintenant - a.dateAchat > 3600000)) {
+                deleteDoc(doc(db, "maisons", maisonId, "achatsSpecifiques", a.id));
+            }
+        });
+    }
+
+    function majCompteurCourses() {
+        const semaine = window._compteurSemaine || 0;
+        const specifiques = window._compteurSpecifiques || 0;
+        document.getElementById("compteurCourses").textContent = semaine + specifiques;
+    }
 
     document.getElementById("specifiqueNom").addEventListener("keypress", (e) => {
         if (e.key === "Enter") ajouterArticleSpecifique();
@@ -385,15 +615,12 @@
     };
 
     /* ================= PLANNING ================= */
-    const enfantsRef = collection(db, "enfants");
     const JOURS = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"];
     const JOURS_LABEL = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
     const HEURE_DEBUT_GRILLE = 7;
     const HEURE_FIN_GRILLE = 21;
     const LIGNES_PAR_HEURE = 12;
     const TOTAL_LIGNES = (HEURE_FIN_GRILLE - HEURE_DEBUT_GRILLE) * LIGNES_PAR_HEURE;
-
-    let enfantsActuels = [];
 
     function genererId() {
         return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -414,11 +641,11 @@
         const input = document.getElementById("nouvelEnfant");
         const nom = input.value.trim();
         if (nom === "") return;
-        await addDoc(enfantsRef, { nom, evenements: [] });
+        await addDoc(refEnfants, { nom, evenements: [] });
         input.value = "";
     };
     window.supprimerEnfant = async function(id) {
-        await deleteDoc(doc(db, "enfants", id));
+        await deleteDoc(doc(db, "maisons", maisonId, "enfants", id));
     };
     window.toggleFormulaireAjout = function(enfantId) {
         document.getElementById(`form-ajout-${enfantId}`).classList.toggle("visible");
@@ -434,7 +661,7 @@
         const enfant = enfantsActuels.find(e => e.id === enfantId);
         const nouvelEvenement = { id: genererId(), jour, debut, fin, label, type };
         const nouveauxEvenements = [...(enfant.evenements || []), nouvelEvenement];
-        await updateDoc(doc(db, "enfants", enfantId), { evenements: nouveauxEvenements });
+        await updateDoc(doc(db, "maisons", maisonId, "enfants", enfantId), { evenements: nouveauxEvenements });
         document.getElementById(`ajout-label-${enfantId}`).value = "";
         document.getElementById(`form-ajout-${enfantId}`).classList.remove("visible");
     };
@@ -466,7 +693,7 @@
         const nouveauxEvenements = enfant.evenements.map(ev =>
             ev.id === evenementId ? { id: evenementId, jour, debut, fin, label, type } : ev
         );
-        await updateDoc(doc(db, "enfants", enfantId), { evenements: nouveauxEvenements });
+        await updateDoc(doc(db, "maisons", maisonId, "enfants", enfantId), { evenements: nouveauxEvenements });
         panneau.classList.remove("visible");
     };
     window.supprimerEvenement = async function(enfantId) {
@@ -474,7 +701,7 @@
         const evenementId = panneau.dataset.evenementId;
         const enfant = enfantsActuels.find(e => e.id === enfantId);
         const nouveauxEvenements = enfant.evenements.filter(ev => ev.id !== evenementId);
-        await updateDoc(doc(db, "enfants", enfantId), { evenements: nouveauxEvenements });
+        await updateDoc(doc(db, "maisons", maisonId, "enfants", enfantId), { evenements: nouveauxEvenements });
         panneau.classList.remove("visible");
     };
     window.fermerEditeur = function(enfantId) {
@@ -528,7 +755,7 @@
             ${boutons}
         `;
     }
-    function render() {
+    function renderEnfants() {
         const conteneur = document.getElementById("listeEnfants");
         conteneur.innerHTML = "";
         enfantsActuels.forEach((enfant) => {
@@ -558,11 +785,13 @@
         });
         document.getElementById("compteurEnfants").textContent = enfantsActuels.length;
     }
-    onSnapshot(enfantsRef, (snapshot) => {
-        enfantsActuels = [];
-        snapshot.forEach((d) => enfantsActuels.push({ id: d.id, ...d.data() }));
-        render();
-    });
+    function demarrerEcouteEnfants() {
+        onSnapshot(refEnfants, (snapshot) => {
+            enfantsActuels = [];
+            snapshot.forEach((d) => enfantsActuels.push({ id: d.id, ...d.data() }));
+            renderEnfants();
+        });
+    }
 
     /* ================= NAVIGATION PRINCIPALE ================= */
     window.changerOnglet = function(nom, btn) {
@@ -578,6 +807,16 @@
     const aujourdhui = new Date();
     document.getElementById("dateJour").textContent =
         `${nomsJours[aujourdhui.getDay()]} ${aujourdhui.getDate()} ${nomsMois[aujourdhui.getMonth()]}`;
+
+    /* ================= DÉMARRAGE ================= */
+    const maisonSauvegardeeId = localStorage.getItem("maisonId");
+    const maisonSauvegardeeNom = localStorage.getItem("maisonNom");
+    if (maisonSauvegardeeId) {
+        initMaison(maisonSauvegardeeId, maisonSauvegardeeNom);
+    } else {
+        chargerListeMaisons();
+        document.getElementById("boutonFermerEcran").style.display = "none";
+    }
 </script>
 </body>
 </html>
