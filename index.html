@@ -28,6 +28,8 @@
         cursor: pointer; padding: 0; text-decoration: underline;
     }
     .lien-discret-clair:hover { color: white; }
+    .lien-discret-clair.lien-danger { color: #D68B76; }
+    .lien-discret-clair.lien-danger:hover { color: #EFA491; }
 
     nav { display: flex; flex-direction: column; gap: 4px; }
     nav button {
@@ -261,6 +263,7 @@
             <div class="actions-maison parent-seulement">
                 <button class="lien-discret-clair" onclick="ouvrirEcranMaison()">Changer</button>
                 <button class="lien-discret-clair" onclick="ouvrirEcranMaisonCreation()">+ Nouvelle maison</button>
+                <button class="lien-discret-clair lien-danger" onclick="supprimerMaison()">Supprimer</button>
             </div>
         </div>
         <nav>
@@ -494,6 +497,36 @@
         }
         location.reload();
     }
+
+    window.supprimerMaison = async function() {
+        const premiereConfirmation = confirm(
+            `Es-tu sûr de vouloir supprimer définitivement "${maisonNom}" ?\n\nToutes les données (courses, planning, tâches) seront perdues pour toujours. Cette action est irréversible.`
+        );
+        if (!premiereConfirmation) return;
+
+        const saisie = prompt(`Pour confirmer, retape le nom exact de la maison : "${maisonNom}"`);
+        if (saisie !== maisonNom) {
+            alert("Le nom ne correspond pas, la suppression a été annulée.");
+            return;
+        }
+
+        const sousCollections = ["coursesSemaine", "achatsSpecifiques", "enfants", "taches"];
+        for (const nomCollection of sousCollections) {
+            const snap = await getDocs(collection(db, "maisons", maisonId, nomCollection));
+            const suppressions = [];
+            snap.forEach(d => suppressions.push(deleteDoc(d.ref)));
+            await Promise.all(suppressions);
+        }
+        await deleteDoc(doc(db, "maisons", maisonId, "meta", "coursesSemaine")).catch(() => {});
+        await deleteDoc(doc(db, "maisons", maisonId));
+
+        localStorage.removeItem("maisonId");
+        localStorage.removeItem("maisonNom");
+        localStorage.removeItem("role");
+        localStorage.removeItem("enfantId");
+        localStorage.removeItem("enfantNom");
+        location.reload();
+    };
 
     function getIdSemaineActuelle() {
         const d = new Date();
