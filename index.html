@@ -1,184 +1,257 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Liste de courses - Famille</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notre Famille</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --navy: #20242B;
+        --navy-light: #2C3138;
+        --parchment: #FBF7EE;
+        --ink: #2B2A28;
+        --ink-soft: #6B6862;
+        --gold: #C79A3C;
+        --gold-dark: #A97E2C;
+        --blue: #5E7C99;
+        --terracotta: #B5654A;
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        color: var(--ink);
+        background: var(--navy);
+    }
+    header {
+        background: var(--navy);
+        padding: 28px 20px 0;
+        max-width: 640px;
+        margin: 0 auto;
+    }
+    .logo {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 26px;
+        color: var(--parchment);
+        margin: 0 0 22px;
+    }
+    nav {
+        display: flex;
+        gap: 4px;
+    }
+    nav button {
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        padding: 11px 18px;
+        border: none;
+        border-radius: 10px 10px 0 0;
+        cursor: pointer;
+        color: rgba(255,255,255,0.55);
+        background: rgba(255,255,255,0.06);
+        transform: translateY(4px);
+        transition: transform 0.15s ease, color 0.15s ease;
+    }
+    nav button:hover { color: rgba(255,255,255,0.85); }
+    nav button.actif {
+        color: var(--navy);
+        transform: translateY(0);
+    }
+    nav button[data-tab="courses"].actif { background: var(--gold); }
+    nav button[data-tab="planning"].actif { background: var(--blue); color: white; }
+    nav button[data-tab="taches"].actif { background: var(--terracotta); color: white; }
+
+    main {
+        max-width: 640px;
+        margin: 0 auto;
+        background: var(--parchment);
+        min-height: 60vh;
+        border-radius: 0 12px 12px 12px;
+        padding: 32px 24px 60px;
+    }
+    .onglet { display: none; animation: apparition 0.25s ease; }
+    .onglet.actif { display: block; }
+    @keyframes apparition {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 21px;
+        margin: 0 0 20px;
+        color: var(--ink);
+    }
+
+    .ajout-zone {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+    }
+    input[type="text"] {
+        flex: 1;
+        padding: 12px 14px;
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        border: 1px solid #E3DBC9;
+        border-radius: 8px;
+        background: white;
+        color: var(--ink);
+    }
+    input[type="text"]:focus {
+        outline: 2px solid var(--gold);
+        outline-offset: 1px;
+    }
+    button.action {
+        padding: 12px 20px;
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        background: var(--gold);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    button.action:hover { background: var(--gold-dark); }
+
+    ul { list-style: none; padding: 0; margin: 0; }
+    li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 4px;
+        border-bottom: 1px solid #EAE3D2;
+    }
+    li:last-child { border-bottom: none; }
+    li.achete span { text-decoration: line-through; color: var(--ink-soft); }
+    .gauche { display: flex; align-items: center; gap: 12px; }
+    .gauche input[type="checkbox"] {
+        width: 18px; height: 18px;
+        accent-color: var(--gold);
+    }
+    .supprimer {
+        background: none;
+        border: none;
+        color: var(--ink-soft);
+        font-size: 16px;
+        cursor: pointer;
+        padding: 4px 8px;
+    }
+    .supprimer:hover { color: var(--terracotta); }
+
+    .a-venir {
+        color: var(--ink-soft);
+        font-size: 15px;
+        line-height: 1.6;
+        padding: 20px 0;
+    }
+</style>
 </head>
 <body>
-    <h1>🛒 Notre liste de courses</h1>
-    <p>Le site fonctionne ! On va construire la vraie liste juste après.</p>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste de courses - Famille</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-        }
-        .ajout-zone {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        input[type="text"] {
-            flex: 1;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-        button {
-            padding: 10px 16px;
-            font-size: 16px;
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #219150;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: white;
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        li.achete span {
-            text-decoration: line-through;
-            color: #aaa;
-        }
-        .gauche {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .supprimer {
-            background: #e74c3c;
-            padding: 6px 10px;
-            font-size: 14px;
-        }
-        .supprimer:hover {
-            background: #c0392b;
-        }
-    </style>
-</head>
-<body>
-    <h1>🛒 Notre liste de courses</h1>
 
-    <div class="ajout-zone">
-        <input type="text" id="nouvelArticle" placeholder="Ajouter un article...">
-        <button onclick="ajouterArticle()">Ajouter</button>
-    </div>
+<header>
+    <p class="logo">Notre Famille</p>
+    <nav>
+        <button class="actif" data-tab="courses" onclick="changerOnglet('courses', this)">Courses</button>
+        <button data-tab="planning" onclick="changerOnglet('planning', this)">Planning</button>
+        <button data-tab="taches" onclick="changerOnglet('taches', this)">Tâches</button>
+    </nav>
+</header>
 
-    <ul id="listeArticles"></ul>
+<main>
+    <section id="courses" class="onglet actif">
+        <h2>Liste de courses</h2>
+        <div class="ajout-zone">
+            <input type="text" id="nouvelArticle" placeholder="Ajouter un article...">
+            <button class="action" onclick="ajouterArticle()">Ajouter</button>
+        </div>
+        <ul id="listeArticles"></ul>
+    </section>
 
-    <!-- SDK Firebase -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import {
-            getFirestore,
-            collection,
-            addDoc,
-            deleteDoc,
-            updateDoc,
-            doc,
-            onSnapshot
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <section id="planning" class="onglet">
+        <h2>Planning familial</h2>
+        <p class="a-venir">L'emploi du temps de l'école et les activités du soir arrivent à la prochaine étape.</p>
+    </section>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDzd-fjLhHx2FRXdcnGZy4G27yGF_h9els",
-            authDomain: "liste-courses-famille-a0096.firebaseapp.com",
-            projectId: "liste-courses-famille-a0096",
-            storageBucket: "liste-courses-famille-a0096.firebasestorage.app",
-            messagingSenderId: "631053249612",
-            appId: "1:631053249612:web:51d4ede9f7331ff22058e9"
-        };
+    <section id="taches" class="onglet">
+        <h2>Tâches ménagères</h2>
+        <p class="a-venir">La rotation automatique des tâches arrive juste après le planning.</p>
+    </section>
+</main>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const articlesRef = collection(db, "articles");
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+        getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Rendre les fonctions accessibles depuis le HTML
-        window.ajouterArticle = async function() {
-            const input = document.getElementById("nouvelArticle");
-            const texte = input.value.trim();
-            if (texte === "") return;
+    const firebaseConfig = {
+        apiKey: "AIzaSyDzd-fjLhHx2FRXdcnGZy4G27yGF_h9els",
+        authDomain: "liste-courses-famille-a0096.firebaseapp.com",
+        projectId: "liste-courses-famille-a0096",
+        storageBucket: "liste-courses-famille-a0096.firebasestorage.app",
+        messagingSenderId: "631053249612",
+        appId: "1:631053249612:web:51d4ede9f7331ff22058e9"
+    };
 
-            await addDoc(articlesRef, {
-                nom: texte,
-                achete: false,
-                dateAjout: Date.now()
-            });
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const articlesRef = collection(db, "articles");
 
-            input.value = "";
-        };
+    window.ajouterArticle = async function() {
+        const input = document.getElementById("nouvelArticle");
+        const texte = input.value.trim();
+        if (texte === "") return;
+        await addDoc(articlesRef, { nom: texte, achete: false, dateAjout: Date.now() });
+        input.value = "";
+    };
 
-        window.toggleAchete = async function(id, etatActuel) {
-            await updateDoc(doc(db, "articles", id), {
-                achete: !etatActuel
-            });
-        };
+    window.toggleAchete = async function(id, etatActuel) {
+        await updateDoc(doc(db, "articles", id), { achete: !etatActuel });
+    };
 
-        window.supprimerArticle = async function(id) {
-            await deleteDoc(doc(db, "articles", id));
-        };
+    window.supprimerArticle = async function(id) {
+        await deleteDoc(doc(db, "articles", id));
+    };
 
-        // Écoute en temps réel : dès qu'un changement arrive, on réaffiche la liste
-        onSnapshot(articlesRef, (snapshot) => {
-            const liste = document.getElementById("listeArticles");
-            liste.innerHTML = "";
+    onSnapshot(articlesRef, (snapshot) => {
+        const liste = document.getElementById("listeArticles");
+        liste.innerHTML = "";
+        const articles = [];
+        snapshot.forEach((docSnap) => articles.push({ id: docSnap.id, ...docSnap.data() }));
+        articles.sort((a, b) => a.dateAjout - b.dateAjout);
 
-            const articles = [];
-            snapshot.forEach((docSnap) => {
-                articles.push({ id: docSnap.id, ...docSnap.data() });
-            });
-
-            // Trier par date d'ajout
-            articles.sort((a, b) => a.dateAjout - b.dateAjout);
-
-            articles.forEach((article) => {
-                const li = document.createElement("li");
-                if (article.achete) li.classList.add("achete");
-
-                li.innerHTML = `
-                    <div class="gauche">
-                        <input type="checkbox" ${article.achete ? "checked" : ""} 
-                               onchange="toggleAchete('${article.id}', ${article.achete})">
-                        <span>${article.nom}</span>
-                    </div>
-                    <button class="supprimer" onclick="supprimerArticle('${article.id}')">✕</button>
-                `;
-
-                liste.appendChild(li);
-            });
+        articles.forEach((article) => {
+            const li = document.createElement("li");
+            if (article.achete) li.classList.add("achete");
+            li.innerHTML = `
+                <div class="gauche">
+                    <input type="checkbox" ${article.achete ? "checked" : ""}
+                           onchange="toggleAchete('${article.id}', ${article.achete})">
+                    <span>${article.nom}</span>
+                </div>
+                <button class="supprimer" onclick="supprimerArticle('${article.id}')">✕</button>
+            `;
+            liste.appendChild(li);
         });
+    });
 
-        // Permet d'ajouter en appuyant sur "Entrée"
-        document.getElementById("nouvelArticle").addEventListener("keypress", (e) => {
-            if (e.key === "Enter") ajouterArticle();
-        });
-    </script>
+    document.getElementById("nouvelArticle").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") ajouterArticle();
+    });
+
+    window.changerOnglet = function(nom, btn) {
+        document.querySelectorAll(".onglet").forEach(el => el.classList.remove("actif"));
+        document.querySelectorAll("nav button").forEach(el => el.classList.remove("actif"));
+        document.getElementById(nom).classList.add("actif");
+        btn.classList.add("actif");
+    };
+</script>
 </body>
 </html>
