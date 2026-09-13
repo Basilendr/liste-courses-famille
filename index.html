@@ -52,4 +52,275 @@
     nav button {
         display: flex;
         align-items: center;
-        gap:
+        gap: 10px;
+        text-align: left;
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        padding: 11px 12px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        color: rgba(255,255,255,0.6);
+        background: transparent;
+    }
+    nav button:hover { background: rgba(255,255,255,0.06); color: white; }
+    nav button.actif { color: white; }
+    nav button[data-tab="accueil"].actif { background: rgba(255,255,255,0.08); }
+    nav button[data-tab="courses"].actif { background: var(--gold); color: var(--navy); }
+    nav button[data-tab="planning"].actif { background: var(--blue); }
+    nav button[data-tab="taches"].actif { background: var(--terracotta); }
+
+    /* Contenu principal */
+    main {
+        flex: 1;
+        padding: 40px 36px 60px;
+        max-width: 720px;
+    }
+    .onglet { display: none; animation: apparition 0.25s ease; }
+    .onglet.actif { display: block; }
+    @keyframes apparition {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1.titre-page {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 28px;
+        margin: 0 0 4px;
+    }
+    .date-jour {
+        color: var(--ink-soft);
+        font-size: 15px;
+        margin: 0 0 32px;
+        text-transform: capitalize;
+    }
+
+    h2 {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 21px;
+        margin: 0 0 20px;
+    }
+
+    /* Tuiles du tableau de bord */
+    .tuiles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+    .tuile {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        border-top: 3px solid var(--gold);
+    }
+    .tuile.planning { border-top-color: var(--blue); }
+    .tuile.taches { border-top-color: var(--terracotta); }
+    .tuile .chiffre {
+        font-family: 'Fraunces', serif;
+        font-size: 30px;
+        font-weight: 600;
+        margin: 0;
+    }
+    .tuile .label {
+        font-size: 14px;
+        color: var(--ink-soft);
+        margin: 4px 0 0;
+    }
+
+    .ajout-zone { display: flex; gap: 8px; margin-bottom: 24px; }
+    input[type="text"] {
+        flex: 1;
+        padding: 12px 14px;
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        border: 1px solid #E3DBC9;
+        border-radius: 8px;
+        background: white;
+        color: var(--ink);
+    }
+    input[type="text"]:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+    button.action {
+        padding: 12px 20px;
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        background: var(--gold);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    button.action:hover { background: var(--gold-dark); }
+
+    ul { list-style: none; padding: 0; margin: 0; background: white; border-radius: 10px; }
+    li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-bottom: 1px solid #EAE3D2;
+    }
+    li:last-child { border-bottom: none; }
+    li.achete span { text-decoration: line-through; color: var(--ink-soft); }
+    .gauche { display: flex; align-items: center; gap: 12px; }
+    .gauche input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--gold); }
+    .supprimer { background: none; border: none; color: var(--ink-soft); font-size: 16px; cursor: pointer; padding: 4px 8px; }
+    .supprimer:hover { color: var(--terracotta); }
+
+    .a-venir { color: var(--ink-soft); font-size: 15px; line-height: 1.6; padding: 20px 0; }
+
+    /* Responsive : sidebar en haut sur mobile */
+    @media (max-width: 700px) {
+        .layout { flex-direction: column; }
+        aside {
+            width: 100%;
+            flex-direction: row;
+            align-items: center;
+            padding: 16px;
+            gap: 16px;
+            overflow-x: auto;
+        }
+        nav { flex-direction: row; }
+        main { padding: 28px 20px 50px; }
+        .tuiles { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+
+<div class="layout">
+    <aside>
+        <p class="logo">Notre Famille</p>
+        <nav>
+            <button class="actif" data-tab="accueil" onclick="changerOnglet('accueil', this)">🏠 Accueil</button>
+            <button data-tab="courses" onclick="changerOnglet('courses', this)">🛒 Courses</button>
+            <button data-tab="planning" onclick="changerOnglet('planning', this)">📅 Planning</button>
+            <button data-tab="taches" onclick="changerOnglet('taches', this)">🧹 Tâches</button>
+        </nav>
+    </aside>
+
+    <main>
+        <section id="accueil" class="onglet actif">
+            <h1 class="titre-page">Bonjour !</h1>
+            <p class="date-jour" id="dateJour"></p>
+            <div class="tuiles">
+                <div class="tuile courses">
+                    <p class="chiffre" id="compteurCourses">–</p>
+                    <p class="label">articles à acheter</p>
+                </div>
+                <div class="tuile planning">
+                    <p class="chiffre">–</p>
+                    <p class="label">le planning arrive bientôt</p>
+                </div>
+                <div class="tuile taches">
+                    <p class="chiffre">–</p>
+                    <p class="label">les tâches arrivent bientôt</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="courses" class="onglet">
+            <h2>Liste de courses</h2>
+            <div class="ajout-zone">
+                <input type="text" id="nouvelArticle" placeholder="Ajouter un article...">
+                <button class="action" onclick="ajouterArticle()">Ajouter</button>
+            </div>
+            <ul id="listeArticles"></ul>
+        </section>
+
+        <section id="planning" class="onglet">
+            <h2>Planning familial</h2>
+            <p class="a-venir">L'emploi du temps de l'école et les activités du soir arrivent à la prochaine étape.</p>
+        </section>
+
+        <section id="taches" class="onglet">
+            <h2>Tâches ménagères</h2>
+            <p class="a-venir">La rotation automatique des tâches arrive juste après le planning.</p>
+        </section>
+    </main>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+        getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDzd-fjLhHx2FRXdcnGZy4G27yGF_h9els",
+        authDomain: "liste-courses-famille-a0096.firebaseapp.com",
+        projectId: "liste-courses-famille-a0096",
+        storageBucket: "liste-courses-famille-a0096.firebasestorage.app",
+        messagingSenderId: "631053249612",
+        appId: "1:631053249612:web:51d4ede9f7331ff22058e9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const articlesRef = collection(db, "articles");
+
+    window.ajouterArticle = async function() {
+        const input = document.getElementById("nouvelArticle");
+        const texte = input.value.trim();
+        if (texte === "") return;
+        await addDoc(articlesRef, { nom: texte, achete: false, dateAjout: Date.now() });
+        input.value = "";
+    };
+
+    window.toggleAchete = async function(id, etatActuel) {
+        await updateDoc(doc(db, "articles", id), { achete: !etatActuel });
+    };
+
+    window.supprimerArticle = async function(id) {
+        await deleteDoc(doc(db, "articles", id));
+    };
+
+    onSnapshot(articlesRef, (snapshot) => {
+        const liste = document.getElementById("listeArticles");
+        liste.innerHTML = "";
+        const articles = [];
+        snapshot.forEach((docSnap) => articles.push({ id: docSnap.id, ...docSnap.data() }));
+        articles.sort((a, b) => a.dateAjout - b.dateAjout);
+
+        articles.forEach((article) => {
+            const li = document.createElement("li");
+            if (article.achete) li.classList.add("achete");
+            li.innerHTML = `
+                <div class="gauche">
+                    <input type="checkbox" ${article.achete ? "checked" : ""}
+                           onchange="toggleAchete('${article.id}', ${article.achete})">
+                    <span>${article.nom}</span>
+                </div>
+                <button class="supprimer" onclick="supprimerArticle('${article.id}')">✕</button>
+            `;
+            liste.appendChild(li);
+        });
+
+        // Mise à jour du compteur sur la page d'accueil
+        const restants = articles.filter(a => !a.achete).length;
+        document.getElementById("compteurCourses").textContent = restants;
+    });
+
+    document.getElementById("nouvelArticle").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") ajouterArticle();
+    });
+
+    window.changerOnglet = function(nom, btn) {
+        document.querySelectorAll(".onglet").forEach(el => el.classList.remove("actif"));
+        document.querySelectorAll("nav button").forEach(el => el.classList.remove("actif"));
+        document.getElementById(nom).classList.add("actif");
+        btn.classList.add("actif");
+    };
+
+    // Date du jour en français
+    const jours = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+    const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+    const aujourdhui = new Date();
+    document.getElementById("dateJour").textContent =
+        `${jours[aujourdhui.getDay()]} ${aujourdhui.getDate()} ${mois[aujourdhui.getMonth()]}`;
+</script>
+</body>
+</html>
