@@ -11,7 +11,7 @@
     :root {
         --navy: #20242B; --parchment: #FBF7EE; --ink: #2B2A28; --ink-soft: #6B6862;
         --gold: #C79A3C; --gold-dark: #A97E2C; --blue: #5E7C99; --blue-clair: #E7EDF2;
-        --terracotta: #B5654A; --terracotta-clair: #F3E4DE;
+        --terracotta: #B5654A; --terracotta-clair: #F3E4DE; --vert: #3F6146; --vert-clair: #E4EEE6;
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Inter', sans-serif; color: var(--ink); background: var(--parchment); }
@@ -21,7 +21,7 @@
     .logo { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; color: var(--parchment); margin: 0; padding: 0 8px; }
 
     .maison-actuelle { padding: 10px 8px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .nom-maison { color: white; font-family: 'Fraunces', serif; font-size: 15px; margin: 0 0 8px; }
+    .nom-maison { color: white; font-family: 'Fraunces', serif; font-size: 14px; margin: 0 0 8px; }
     .actions-maison { display: flex; gap: 10px; }
     .lien-discret-clair {
         background: none; border: none; color: rgba(255,255,255,0.55); font-size: 12.5px;
@@ -51,6 +51,7 @@
     h1.titre-page { font-family: 'Fraunces', serif; font-weight: 600; font-size: 28px; margin: 0 0 4px; }
     .date-jour { color: var(--ink-soft); font-size: 15px; margin: 0 0 32px; text-transform: capitalize; }
     h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; margin: 0 0 20px; }
+    h3.soustitre { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; margin: 24px 0 12px; color: var(--ink-soft); }
 
     .tuiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .tuile { background: white; border-radius: 10px; padding: 20px; border-top: 3px solid var(--gold); }
@@ -59,7 +60,7 @@
     .tuile .chiffre { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0; }
     .tuile .label { font-size: 14px; color: var(--ink-soft); margin: 4px 0 0; }
 
-    input[type="text"], input[type="time"], input[type="number"], select {
+    input[type="text"], input[type="time"], input[type="number"], input[type="date"], select {
         padding: 11px 13px; font-family: 'Inter', sans-serif; font-size: 14px;
         border: 1px solid #E3DBC9; border-radius: 8px; background: white; color: var(--ink);
     }
@@ -79,6 +80,7 @@
     li { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #EAE3D2; }
     li:last-child { border-bottom: none; }
     li.achete span.nom-article { text-decoration: line-through; color: var(--ink-soft); }
+    span.nom-article.achete { text-decoration: line-through; color: var(--ink-soft); }
     .gauche { display: flex; align-items: center; gap: 12px; }
     .gauche input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--gold); }
     .supprimer { background: none; border: none; color: var(--ink-soft); font-size: 16px; cursor: pointer; padding: 4px 8px; }
@@ -88,6 +90,11 @@
         font-size: 13px; color: var(--ink-soft); background: #F1ECDF; padding: 10px 14px;
         border-radius: 8px; margin-bottom: 20px;
     }
+
+    .badge-statut { font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 12px; white-space: nowrap; }
+    .statut-attente { background: #F1ECDF; color: var(--ink-soft); }
+    .statut-fait { background: var(--vert-clair); color: var(--vert); }
+    .statut-retard { background: var(--terracotta-clair); color: #6E3B29; }
 
     /* ---- Sous-navigation Courses ---- */
     .sous-nav { display: flex; gap: 8px; margin-bottom: 18px; }
@@ -105,7 +112,7 @@
     }
     .ajout-zone-courses input[name="nom"] { flex: 2; min-width: 160px; }
     .ajout-zone-courses input[name="quantite"] { width: 90px; }
-    .ajout-zone-courses select { flex: 1; min-width: 190px; }
+    .ajout-zone-courses select { flex: 1; min-width: 170px; }
     .ajout-zone-courses input[name="note"] { flex: 2; min-width: 180px; }
 
     .groupe-categorie { margin-bottom: 20px; }
@@ -116,7 +123,6 @@
         font-size: 12.5px; color: var(--ink-soft); background: #F1ECDF; padding: 2px 8px; border-radius: 10px; margin-left: 4px;
     }
     .note-article { font-size: 12.5px; color: var(--ink-soft); font-style: italic; display: block; }
-    .expire-note { font-size: 11.5px; color: var(--ink-soft); }
 
     /* ---- Planning ---- */
     .carte-enfant { background: white; border-radius: 10px; padding: 22px; margin-bottom: 28px; border-top: 3px solid var(--blue); }
@@ -185,6 +191,10 @@
     .separateur-ou::after { right: 0; }
     .erreur-code { color: var(--terracotta); font-size: 13px; margin: 8px 0 0; min-height: 16px; }
 
+    /* ---- Restriction accès Enfant ---- */
+    body.role-enfant .parent-seulement { display: none !important; }
+    body.role-enfant .evenement { pointer-events: none; cursor: default; }
+
     @media (max-width: 700px) {
         .layout { flex-direction: column; }
         aside { width: 100%; flex-direction: column; padding: 16px; gap: 14px; }
@@ -200,31 +210,46 @@
     <div class="carte-maison">
         <button class="fermer-ecran" id="boutonFermerEcran" onclick="fermerEcranMaison()">✕</button>
         <p class="logo-ecran">Notre Famille</p>
-        <h2>Choisissez votre espace</h2>
 
-        <div class="champ-maison">
-            <label>Maison</label>
-            <select id="selectMaisonExistante"></select>
-        </div>
-        <div class="champ-maison">
-            <label>Code d'accès</label>
-            <input type="text" id="codeAcces" placeholder="Ex : 1234">
-        </div>
-        <button class="action" onclick="rejoindreMaison()">Entrer</button>
-        <p class="erreur-code" id="erreurCode"></p>
+        <div id="blocRejoindre">
+            <h2>Choisissez votre espace</h2>
+            <div class="champ-maison">
+                <label>Maison</label>
+                <select id="selectMaisonExistante"></select>
+            </div>
+            <div class="champ-maison">
+                <label>Code d'accès (parent ou enfant)</label>
+                <input type="text" id="codeAcces" placeholder="Ex : 1234">
+            </div>
+            <button class="action" onclick="rejoindreMaison()">Entrer</button>
+            <p class="erreur-code" id="erreurCode"></p>
 
-        <div class="separateur-ou">ou</div>
+            <div class="separateur-ou">ou</div>
 
-        <h3>Créer une nouvelle maison</h3>
-        <div class="champ-maison">
-            <label>Nom de la maison</label>
-            <input type="text" id="nouveauNomMaison" placeholder="Ex : Maison Julie">
+            <h3>Créer une nouvelle maison</h3>
+            <div class="champ-maison">
+                <label>Nom de la maison</label>
+                <input type="text" id="nouveauNomMaison" placeholder="Ex : Maison Julie">
+            </div>
+            <div class="champ-maison">
+                <label>Code d'accès Parent</label>
+                <input type="text" id="nouveauCodeParent" placeholder="Ex : 1234">
+            </div>
+            <div class="champ-maison">
+                <label>Code d'accès Enfant</label>
+                <input type="text" id="nouveauCodeEnfant" placeholder="Ex : 0000">
+            </div>
+            <button class="action discret" onclick="creerMaison()">Créer la maison</button>
         </div>
-        <div class="champ-maison">
-            <label>Choisissez un code d'accès</label>
-            <input type="text" id="nouveauCodeMaison" placeholder="Ex : 1234">
+
+        <div id="blocChoixEnfant" style="display:none;">
+            <h2>Qui es-tu ?</h2>
+            <div class="champ-maison">
+                <label>Choisis ton prénom</label>
+                <select id="selectEnfantIdentite"></select>
+            </div>
+            <button class="action" onclick="confirmerIdentiteEnfant()">Continuer</button>
         </div>
-        <button class="action discret" onclick="creerMaison()">Créer la maison</button>
     </div>
 </div>
 
@@ -233,7 +258,7 @@
         <p class="logo">Notre Famille</p>
         <div class="maison-actuelle">
             <p class="nom-maison" id="nomMaisonActuelle">–</p>
-            <div class="actions-maison">
+            <div class="actions-maison parent-seulement">
                 <button class="lien-discret-clair" onclick="ouvrirEcranMaison()">Changer</button>
                 <button class="lien-discret-clair" onclick="ouvrirEcranMaisonCreation()">+ Nouvelle maison</button>
             </div>
@@ -260,8 +285,8 @@
                     <p class="label">enfant(s) dans le planning</p>
                 </div>
                 <div class="tuile taches">
-                    <p class="chiffre">–</p>
-                    <p class="label">les tâches arrivent bientôt</p>
+                    <p class="chiffre" id="compteurTaches">–</p>
+                    <p class="label">tâche(s) en attente</p>
                 </div>
             </div>
         </section>
@@ -275,7 +300,7 @@
 
             <div id="semaine" class="sous-onglet actif">
                 <p class="note-info">Cette liste se réinitialise automatiquement chaque semaine.</p>
-                <div class="ajout-zone-courses">
+                <div class="ajout-zone-courses parent-seulement">
                     <input type="text" name="nom" id="semaineNom" placeholder="Article (ex : Lait)">
                     <input type="text" name="quantite" id="semaineQuantite" placeholder="Qté (ex : x2)">
                     <select id="semaineCategorie"></select>
@@ -286,7 +311,7 @@
 
             <div id="specifiques" class="sous-onglet">
                 <p class="note-info">Une fois cochés, ces articles sont automatiquement supprimés après 1 heure.</p>
-                <div class="ajout-zone-courses">
+                <div class="ajout-zone-courses parent-seulement">
                     <input type="text" name="nom" id="specifiqueNom" placeholder="Article (ex : Livre pour Léa)">
                     <input type="text" name="note" id="specifiqueNote" placeholder="Note (ex : à commander en ligne)">
                     <button class="action" onclick="ajouterArticleSpecifique()">Ajouter</button>
@@ -297,7 +322,7 @@
 
         <section id="planning" class="onglet">
             <h2>Planning familial</h2>
-            <div class="ajout-zone">
+            <div class="ajout-zone parent-seulement">
                 <input type="text" id="nouvelEnfant" placeholder="Prénom de l'enfant...">
                 <button class="action" onclick="ajouterEnfant()">Ajouter un enfant</button>
             </div>
@@ -306,7 +331,26 @@
 
         <section id="taches" class="onglet">
             <h2>Tâches ménagères</h2>
-            <p class="a-venir">La rotation automatique des tâches arrive à la prochaine étape.</p>
+
+            <div class="parent-seulement">
+                <h3 class="soustitre">Assigner une tâche</h3>
+                <div class="ajout-zone-courses">
+                    <input type="text" id="tacheNom" placeholder="Tâche (ex : Sortir les poubelles)">
+                    <select id="tacheEnfant"></select>
+                    <input type="date" id="tacheDate">
+                    <input type="time" id="tacheHeure">
+                    <button class="action" onclick="assignerTache()">Assigner</button>
+                </div>
+                <h3 class="soustitre">Toutes les tâches du mois</h3>
+                <ul id="listeTachesParent"></ul>
+            </div>
+
+            <div id="blocMesTaches" style="display:none;">
+                <h3 class="soustitre">Mes tâches</h3>
+                <ul id="listeMesTaches"></ul>
+                <h3 class="soustitre">Historique de ce mois-ci</h3>
+                <ul id="historiqueTaches"></ul>
+            </div>
         </section>
     </main>
 </div>
@@ -330,20 +374,29 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* ================= GESTION DES MAISONS ================= */
+    /* ================= GESTION DES MAISONS ET RÔLES ================= */
     let maisonId = null;
     let maisonNom = null;
+    let role = "parent";
+    let enfantIdActuel = null;
+    let enfantNomActuel = null;
+
     let refCoursesSemaine = null;
     let refSpecifiques = null;
     let refEnfants = null;
+    let refTaches = null;
+
     let specifiquesActuels = [];
     let enfantsActuels = [];
+    let tachesActuelles = [];
 
     window.fermerEcranMaison = function() {
         if (maisonId) document.getElementById("ecranMaison").classList.add("cachee");
     };
     window.ouvrirEcranMaison = function() {
         chargerListeMaisons();
+        document.getElementById("blocRejoindre").style.display = "block";
+        document.getElementById("blocChoixEnfant").style.display = "none";
         document.getElementById("ecranMaison").classList.remove("cachee");
         document.getElementById("boutonFermerEcran").style.display = maisonId ? "block" : "none";
     };
@@ -374,29 +427,73 @@
         const code = document.getElementById("codeAcces").value.trim();
         const erreur = document.getElementById("erreurCode");
         erreur.textContent = "";
-        if (!idChoisi) { erreur.textContent = "Choisissez une maison."; return; }
+        if (!idChoisi) { erreur.textContent = "Choisis une maison."; return; }
         const snap = await getDoc(doc(db, "maisons", idChoisi));
-        if (!snap.exists() || snap.data().code !== code) {
+        if (!snap.exists()) { erreur.textContent = "Maison introuvable."; return; }
+        const data = snap.data();
+        if (code !== "" && code === data.codeParent) {
+            finaliserAcces(idChoisi, data.nom, "parent", null, null);
+        } else if (code !== "" && code === data.codeEnfant) {
+            await afficherChoixEnfant(idChoisi, data.nom);
+        } else {
             erreur.textContent = "Code incorrect, réessaie.";
-            return;
         }
-        localStorage.setItem("maisonId", idChoisi);
-        localStorage.setItem("maisonNom", snap.data().nom);
-        location.reload();
+    };
+
+    async function afficherChoixEnfant(idMaison, nomMaison) {
+        const enfantsSnap = await getDocs(collection(db, "maisons", idMaison, "enfants"));
+        const select = document.getElementById("selectEnfantIdentite");
+        select.innerHTML = "";
+        if (enfantsSnap.empty) {
+            select.innerHTML = `<option value="">Aucun enfant enregistré</option>`;
+        } else {
+            enfantsSnap.forEach(d => {
+                const option = document.createElement("option");
+                option.value = d.id;
+                option.textContent = d.data().nom;
+                select.appendChild(option);
+            });
+        }
+        const bloc = document.getElementById("blocChoixEnfant");
+        bloc.dataset.maisonId = idMaison;
+        bloc.dataset.maisonNom = nomMaison;
+        document.getElementById("blocRejoindre").style.display = "none";
+        bloc.style.display = "block";
+    }
+
+    window.confirmerIdentiteEnfant = function() {
+        const bloc = document.getElementById("blocChoixEnfant");
+        const select = document.getElementById("selectEnfantIdentite");
+        if (!select.value) return;
+        const enfantNom = select.options[select.selectedIndex].textContent;
+        finaliserAcces(bloc.dataset.maisonId, bloc.dataset.maisonNom, "enfant", select.value, enfantNom);
     };
 
     window.creerMaison = async function() {
         const nom = document.getElementById("nouveauNomMaison").value.trim();
-        const code = document.getElementById("nouveauCodeMaison").value.trim();
-        if (nom === "" || code === "") {
-            alert("Merci de renseigner un nom et un code.");
+        const codeParent = document.getElementById("nouveauCodeParent").value.trim();
+        const codeEnfant = document.getElementById("nouveauCodeEnfant").value.trim();
+        if (nom === "" || codeParent === "" || codeEnfant === "") {
+            alert("Merci de renseigner un nom et les deux codes.");
             return;
         }
-        const ref = await addDoc(collection(db, "maisons"), { nom, code, dateCreation: Date.now() });
-        localStorage.setItem("maisonId", ref.id);
-        localStorage.setItem("maisonNom", nom);
-        location.reload();
+        const ref = await addDoc(collection(db, "maisons"), { nom, codeParent, codeEnfant, dateCreation: Date.now() });
+        finaliserAcces(ref.id, nom, "parent", null, null);
     };
+
+    function finaliserAcces(idMaison, nomMaison, roleChoisi, enfantId, enfantNom) {
+        localStorage.setItem("maisonId", idMaison);
+        localStorage.setItem("maisonNom", nomMaison);
+        localStorage.setItem("role", roleChoisi);
+        if (enfantId) {
+            localStorage.setItem("enfantId", enfantId);
+            localStorage.setItem("enfantNom", enfantNom);
+        } else {
+            localStorage.removeItem("enfantId");
+            localStorage.removeItem("enfantNom");
+        }
+        location.reload();
+    }
 
     function getIdSemaineActuelle() {
         const d = new Date();
@@ -423,18 +520,30 @@
     async function initMaison(id, nom) {
         maisonId = id;
         maisonNom = nom;
-        document.getElementById("nomMaisonActuelle").textContent = "🏠 " + nom;
+        role = localStorage.getItem("role") || "parent";
+        enfantIdActuel = localStorage.getItem("enfantId") || null;
+        enfantNomActuel = localStorage.getItem("enfantNom") || null;
+
+        document.body.classList.toggle("role-enfant", role === "enfant");
+        const libelle = role === "enfant" ? `${nom} — ${enfantNomActuel}` : `${nom} — Parent`;
+        document.getElementById("nomMaisonActuelle").textContent = "🏠 " + libelle;
         document.getElementById("ecranMaison").classList.add("cachee");
+        document.getElementById("blocMesTaches").style.display = role === "enfant" ? "block" : "none";
+
+        const champDate = document.getElementById("tacheDate");
+        if (champDate) champDate.value = new Date().toISOString().slice(0, 10);
 
         await verifierResetSemaine();
 
         refCoursesSemaine = collection(db, "maisons", maisonId, "coursesSemaine");
         refSpecifiques = collection(db, "maisons", maisonId, "achatsSpecifiques");
         refEnfants = collection(db, "maisons", maisonId, "enfants");
+        refTaches = collection(db, "maisons", maisonId, "taches");
 
         demarrerEcouteCoursesSemaine();
         demarrerEcouteSpecifiques();
         demarrerEcouteEnfants();
+        demarrerEcouteTaches();
 
         setInterval(verifierExpirationSpecifiques, 60000);
     }
@@ -515,7 +624,7 @@
                                 <span class="nom-article">${article.nom}</span>
                                 ${article.quantite ? `<span class="quantite-badge">${article.quantite}</span>` : ""}
                             </div>
-                            <button class="supprimer" onclick="supprimerArticleSemaine('${article.id}')">✕</button>
+                            <button class="supprimer parent-seulement" onclick="supprimerArticleSemaine('${article.id}')">✕</button>
                         </li>
                     `;
                 });
@@ -574,10 +683,10 @@
                         <div>
                             <span class="nom-article">${article.nom}</span>
                             ${article.note ? `<span class="note-article">${article.note}</span>` : ""}
-                            ${article.achete ? `<span class="expire-note">Sera supprimé automatiquement dans l'heure</span>` : ""}
+                            ${article.achete ? `<span class="note-article">Sera supprimé automatiquement dans l'heure</span>` : ""}
                         </div>
                     </div>
-                    <button class="supprimer" onclick="supprimerArticleSpecifique('${article.id}')">✕</button>
+                    <button class="supprimer parent-seulement" onclick="supprimerArticleSpecifique('${article.id}')">✕</button>
                 `;
                 liste.appendChild(li);
             });
@@ -764,9 +873,9 @@
             carte.innerHTML = `
                 <div class="carte-enfant-entete">
                     <h3>${enfant.nom}</h3>
-                    <button class="supprimer" onclick="supprimerEnfant('${enfant.id}')">✕ Retirer</button>
+                    <button class="supprimer parent-seulement" onclick="supprimerEnfant('${enfant.id}')">✕ Retirer</button>
                 </div>
-                <div class="barre-outils-planning">
+                <div class="barre-outils-planning parent-seulement">
                     <button class="action" onclick="toggleFormulaireAjout('${enfant.id}')">+ Ajouter un créneau</button>
                 </div>
                 <div class="panneau-formulaire" id="form-ajout-${enfant.id}">
@@ -785,11 +894,130 @@
         });
         document.getElementById("compteurEnfants").textContent = enfantsActuels.length;
     }
+    function remplirSelectTacheEnfant() {
+        const select = document.getElementById("tacheEnfant");
+        if (!select) return;
+        const valeurActuelle = select.value;
+        select.innerHTML = enfantsActuels.map(e => `<option value="${e.id}">${e.nom}</option>`).join("");
+        if (valeurActuelle) select.value = valeurActuelle;
+    }
     function demarrerEcouteEnfants() {
         onSnapshot(refEnfants, (snapshot) => {
             enfantsActuels = [];
             snapshot.forEach((d) => enfantsActuels.push({ id: d.id, ...d.data() }));
             renderEnfants();
+            remplirSelectTacheEnfant();
+        });
+    }
+
+    /* ================= TÂCHES MÉNAGÈRES ================= */
+    function formatDateFr(dateStr) {
+        const [y, m, d] = dateStr.split("-");
+        return `${d}/${m}`;
+    }
+    function moisActuelStr() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    }
+    function estEnRetard(tache) {
+        if (tache.fait) return false;
+        const maintenant = new Date();
+        const [h, m] = tache.heureLimite.split(":").map(Number);
+        const limite = new Date(tache.date + "T00:00:00");
+        limite.setHours(h, m, 0, 0);
+        return maintenant > limite;
+    }
+
+    window.assignerTache = async function() {
+        const nom = document.getElementById("tacheNom").value.trim();
+        const enfantSelect = document.getElementById("tacheEnfant");
+        const enfantId = enfantSelect.value;
+        const enfantNom = enfantSelect.options[enfantSelect.selectedIndex] ? enfantSelect.options[enfantSelect.selectedIndex].textContent : "";
+        const date = document.getElementById("tacheDate").value;
+        const heureLimite = document.getElementById("tacheHeure").value;
+        if (!nom || !enfantId || !date || !heureLimite) { alert("Merci de remplir tous les champs (y compris un enfant du Planning)."); return; }
+        await addDoc(refTaches, { nom, enfantId, enfantNom, date, heureLimite, fait: false, dateFait: null, dateCreation: Date.now() });
+        document.getElementById("tacheNom").value = "";
+    };
+    window.toggleTacheFaite = async function(id, etatActuel) {
+        await updateDoc(doc(db, "maisons", maisonId, "taches", id), {
+            fait: !etatActuel,
+            dateFait: !etatActuel ? Date.now() : null
+        });
+    };
+    window.supprimerTache = async function(id) {
+        await deleteDoc(doc(db, "maisons", maisonId, "taches", id));
+    };
+
+    function renderTaches() {
+        const moisCourant = moisActuelStr();
+        const tachesDuMois = tachesActuelles.filter(t => t.date && t.date.startsWith(moisCourant));
+
+        const conteneurParent = document.getElementById("listeTachesParent");
+        if (conteneurParent) {
+            conteneurParent.innerHTML = "";
+            const tachesTriees = [...tachesDuMois].sort((a, b) => (a.date + a.heureLimite).localeCompare(b.date + b.heureLimite));
+            tachesTriees.forEach(t => {
+                const retard = estEnRetard(t);
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <div class="gauche">
+                        <span class="badge-statut ${t.fait ? 'statut-fait' : (retard ? 'statut-retard' : 'statut-attente')}">
+                            ${t.fait ? "Fait" : (retard ? "En retard" : "À faire")}
+                        </span>
+                        <div>
+                            <span class="nom-article">${t.nom}</span>
+                            <span class="note-article">${t.enfantNom} — ${formatDateFr(t.date)} avant ${t.heureLimite}</span>
+                        </div>
+                    </div>
+                    <button class="supprimer" onclick="supprimerTache('${t.id}')">✕</button>
+                `;
+                conteneurParent.appendChild(li);
+            });
+        }
+
+        const conteneurMes = document.getElementById("listeMesTaches");
+        const conteneurHisto = document.getElementById("historiqueTaches");
+        if (conteneurMes && conteneurHisto) {
+            const mesTaches = tachesDuMois.filter(t => t.enfantId === enfantIdActuel);
+            const enAttente = [...mesTaches.filter(t => !t.fait)].sort((a, b) => (a.date + a.heureLimite).localeCompare(b.date + b.heureLimite));
+            const faites = [...mesTaches.filter(t => t.fait)].sort((a, b) => (b.date + b.heureLimite).localeCompare(a.date + a.heureLimite));
+
+            conteneurMes.innerHTML = enAttente.map(t => {
+                const retard = estEnRetard(t);
+                return `
+                    <li>
+                        <div class="gauche">
+                            <input type="checkbox" onchange="toggleTacheFaite('${t.id}', false)">
+                            <div>
+                                <span class="nom-article">${t.nom}</span>
+                                <span class="note-article">${formatDateFr(t.date)} avant ${t.heureLimite}${retard ? " — en retard" : ""}</span>
+                            </div>
+                        </div>
+                        <span class="badge-statut ${retard ? 'statut-retard' : 'statut-attente'}">${retard ? "En retard" : "À faire"}</span>
+                    </li>
+                `;
+            }).join("") || `<li><span class="note-article">Aucune tâche en attente, bravo !</span></li>`;
+
+            conteneurHisto.innerHTML = faites.map(t => `
+                <li>
+                    <span class="nom-article achete">${t.nom}</span>
+                    <span class="note-article">${formatDateFr(t.date)}</span>
+                </li>
+            `).join("") || `<li><span class="note-article">Pas encore d'historique ce mois-ci.</span></li>`;
+        }
+
+        const enAttenteTotal = role === "parent"
+            ? tachesDuMois.filter(t => !t.fait).length
+            : tachesDuMois.filter(t => t.enfantId === enfantIdActuel && !t.fait).length;
+        document.getElementById("compteurTaches").textContent = enAttenteTotal;
+    }
+
+    function demarrerEcouteTaches() {
+        onSnapshot(refTaches, (snapshot) => {
+            tachesActuelles = [];
+            snapshot.forEach(d => tachesActuelles.push({ id: d.id, ...d.data() }));
+            renderTaches();
         });
     }
 
