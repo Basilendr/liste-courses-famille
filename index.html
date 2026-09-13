@@ -10,7 +10,8 @@
 <style>
     :root {
         --navy: #20242B; --parchment: #FBF7EE; --ink: #2B2A28; --ink-soft: #6B6862;
-        --gold: #C79A3C; --gold-dark: #A97E2C; --blue: #5E7C99; --terracotta: #B5654A;
+        --gold: #C79A3C; --gold-dark: #A97E2C; --blue: #5E7C99; --blue-clair: #E7EDF2;
+        --terracotta: #B5654A; --terracotta-clair: #F3E4DE;
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Inter', sans-serif; color: var(--ink); background: var(--parchment); }
@@ -32,7 +33,7 @@
     nav button[data-tab="planning"].actif { background: var(--blue); }
     nav button[data-tab="taches"].actif { background: var(--terracotta); }
 
-    main { flex: 1; padding: 40px 36px 60px; max-width: 840px; }
+    main { flex: 1; padding: 40px 36px 60px; max-width: 920px; }
     .onglet { display: none; animation: apparition 0.25s ease; }
     .onglet.actif { display: block; }
     @keyframes apparition { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -40,7 +41,6 @@
     h1.titre-page { font-family: 'Fraunces', serif; font-weight: 600; font-size: 28px; margin: 0 0 4px; }
     .date-jour { color: var(--ink-soft); font-size: 15px; margin: 0 0 32px; text-transform: capitalize; }
     h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; margin: 0 0 20px; }
-    h3.soustitre { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; margin: 24px 0 12px; color: var(--ink-soft); }
 
     .tuiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .tuile { background: white; border-radius: 10px; padding: 20px; border-top: 3px solid var(--gold); }
@@ -50,17 +50,22 @@
     .tuile .label { font-size: 14px; color: var(--ink-soft); margin: 4px 0 0; }
 
     .ajout-zone { display: flex; gap: 8px; margin-bottom: 24px; }
-    input[type="text"] {
-        padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 15px;
+    input[type="text"], input[type="time"], select {
+        padding: 11px 13px; font-family: 'Inter', sans-serif; font-size: 14px;
         border: 1px solid #E3DBC9; border-radius: 8px; background: white; color: var(--ink);
     }
     .ajout-zone input[type="text"] { flex: 1; }
-    input[type="text"]:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+    input:focus, select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
     button.action {
         padding: 12px 20px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 500;
         background: var(--gold); color: white; border: none; border-radius: 8px; cursor: pointer;
     }
     button.action:hover { background: var(--gold-dark); }
+    button.action.discret { background: var(--navy); }
+    button.lien-discret {
+        background: none; border: none; color: var(--ink-soft); font-size: 13px;
+        cursor: pointer; text-decoration: underline; padding: 4px;
+    }
 
     ul { list-style: none; padding: 0; margin: 0; background: white; border-radius: 10px; }
     li { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #EAE3D2; }
@@ -72,32 +77,53 @@
     .supprimer:hover { color: var(--terracotta); }
     .a-venir { color: var(--ink-soft); font-size: 15px; line-height: 1.6; padding: 20px 0; }
 
-    /* Planning */
-    .carte-enfant { background: white; border-radius: 10px; padding: 20px; margin-bottom: 24px; border-top: 3px solid var(--blue); }
-    .carte-enfant-entete { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-    .carte-enfant-entete h3 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 18px; margin: 0; }
+    /* ---- Planning ---- */
+    .carte-enfant { background: white; border-radius: 10px; padding: 22px; margin-bottom: 28px; border-top: 3px solid var(--blue); }
+    .carte-enfant-entete { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .carte-enfant-entete h3 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; margin: 0; }
 
+    .barre-outils-planning { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+
+    /* Formulaire ajout / édition */
+    .panneau-formulaire {
+        display: none; background: #FDFBF5; border: 1px solid #EAE3D2; border-radius: 8px;
+        padding: 16px; margin-bottom: 16px; gap: 10px; flex-wrap: wrap; align-items: flex-end;
+    }
+    .panneau-formulaire.visible { display: flex; }
+    .champ-form { display: flex; flex-direction: column; gap: 4px; }
+    .champ-form label { font-size: 12px; color: var(--ink-soft); }
+
+    /* Grille horaire */
     .table-scroll { overflow-x: auto; }
-    table.grille-cours { border-collapse: collapse; font-size: 13px; width: 100%; min-width: 520px; }
-    table.grille-cours th {
-        text-align: center; font-weight: 500; color: var(--ink-soft); font-size: 12.5px;
-        padding: 8px 6px; border-bottom: 2px solid #EAE3D2; background: #FDFBF5;
+    .planning-semaine { min-width: 680px; }
+    .planning-entetes {
+        display: grid; grid-template-columns: 46px repeat(7, 1fr); gap: 2px; margin-bottom: 2px;
     }
-    table.grille-cours th:first-child { text-align: left; width: 78px; }
-    table.grille-cours td { padding: 4px; border-bottom: 1px solid #F1ECDF; }
-    table.grille-cours td.heure { font-weight: 500; color: var(--ink-soft); font-size: 12.5px; white-space: nowrap; padding-left: 8px; }
-    table.grille-cours input[type="text"] {
-        width: 100%; padding: 7px 8px; font-size: 12.5px; border: 1px solid #E3DBC9;
-        border-radius: 6px; background: #FDFBF5; text-align: center;
+    .planning-entetes .jour-label {
+        text-align: center; font-size: 12.5px; font-weight: 500; color: var(--ink-soft); padding: 4px 0;
     }
-
-    .grille-soir { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-    .case-soir { display: flex; flex-direction: column; gap: 4px; }
-    .case-soir label { font-size: 12px; color: var(--ink-soft); text-align: center; }
-    .case-soir input[type="text"] {
-        padding: 8px 6px; font-size: 12.5px; border: 1px solid #E3DBC9; border-radius: 6px;
-        background: #FDFBF5; text-align: center; width: 100%;
+    .planning-grille {
+        position: relative; display: grid;
+        grid-template-columns: 46px repeat(7, 1fr);
+        grid-template-rows: repeat(168, 4px);
+        background-image: repeating-linear-gradient(180deg, transparent, transparent 47px, #EFE9DA 47px, #EFE9DA 48px);
+        border: 1px solid #EFE9DA; border-radius: 6px; overflow: hidden;
     }
+    .heure-label {
+        grid-column: 1; font-size: 11px; color: var(--ink-soft); text-align: right;
+        padding-right: 6px; transform: translateY(-6px); border-right: 1px solid #EFE9DA;
+    }
+    .colonne-fond {
+        border-right: 1px solid #F5F0E4;
+    }
+    .evenement {
+        border-radius: 5px; padding: 3px 6px; font-size: 11.5px; line-height: 1.25;
+        cursor: pointer; overflow: hidden; margin: 0 2px;
+    }
+    .evenement.type-cours { background: var(--blue-clair); border-left: 3px solid var(--blue); color: #33475A; }
+    .evenement.type-activite { background: var(--terracotta-clair); border-left: 3px solid var(--terracotta); color: #6E3B29; }
+    .evenement strong { display: block; font-weight: 600; }
+    .evenement span.heure-evt { font-size: 10.5px; opacity: 0.75; }
 
     @media (max-width: 700px) {
         .layout { flex-direction: column; }
@@ -105,7 +131,6 @@
         nav { flex-direction: row; }
         main { padding: 28px 20px 50px; }
         .tuiles { grid-template-columns: 1fr; }
-        .grille-soir { grid-template-columns: repeat(4, 1fr); }
     }
 </style>
 </head>
@@ -185,7 +210,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* ---------- COURSES ---------- */
+    /* ================= COURSES ================= */
     const articlesRef = collection(db, "articles");
     window.ajouterArticle = async function() {
         const input = document.getElementById("nouvelArticle");
@@ -204,7 +229,7 @@
         const liste = document.getElementById("listeArticles");
         liste.innerHTML = "";
         const articles = [];
-        snapshot.forEach((docSnap) => articles.push({ id: docSnap.id, ...docSnap.data() }));
+        snapshot.forEach((d) => articles.push({ id: d.id, ...d.data() }));
         articles.sort((a, b) => a.dateAjout - b.dateAjout);
         articles.forEach((article) => {
             const li = document.createElement("li");
@@ -225,32 +250,39 @@
         if (e.key === "Enter") ajouterArticle();
     });
 
-    /* ---------- PLANNING ---------- */
+    /* ================= PLANNING ================= */
     const enfantsRef = collection(db, "enfants");
+    const JOURS = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"];
+    const JOURS_LABEL = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+    const HEURE_DEBUT_GRILLE = 7;   // 7h00
+    const HEURE_FIN_GRILLE = 21;    // 21h00
+    const LIGNES_PAR_HEURE = 12;    // 1 ligne = 5 minutes
+    const TOTAL_LIGNES = (HEURE_FIN_GRILLE - HEURE_DEBUT_GRILLE) * LIGNES_PAR_HEURE;
 
-    const joursEcole = ["lundi", "mardi", "mercredi", "jeudi", "vendredi"];
-    const joursEcoleAffiches = ["Lun", "Mar", "Mer", "Jeu", "Ven"];
-    const creneaux = ["8h-9h", "9h-10h", "10h-11h", "11h-12h", "14h-15h", "15h-16h", "16h-17h"];
+    let enfantsActuels = [];
 
-    const joursSemaine = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
-    const joursSemaineAffiches = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+    function genererId() {
+        return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
 
-    function planningVide() {
-        const cours = {};
-        joursEcole.forEach(j => {
-            cours[j] = {};
-            creneaux.forEach(c => cours[j][c] = "");
-        });
-        const soir = {};
-        joursSemaine.forEach(j => soir[j] = "");
-        return { cours, soir };
+    function heureVersMinutes(hhmm) {
+        const [h, m] = hhmm.split(":").map(Number);
+        return h * 60 + m;
+    }
+
+    function minutesVersLigne(minutesDepuisMinuit) {
+        const minutesRelatives = minutesDepuisMinuit - HEURE_DEBUT_GRILLE * 60;
+        let ligne = Math.round(minutesRelatives / 5) + 1;
+        if (ligne < 1) ligne = 1;
+        if (ligne > TOTAL_LIGNES + 1) ligne = TOTAL_LIGNES + 1;
+        return ligne;
     }
 
     window.ajouterEnfant = async function() {
         const input = document.getElementById("nouvelEnfant");
         const nom = input.value.trim();
         if (nom === "") return;
-        await addDoc(enfantsRef, { nom: nom, planning: planningVide() });
+        await addDoc(enfantsRef, { nom: nom, evenements: [] });
         input.value = "";
     };
 
@@ -258,91 +290,222 @@
         await deleteDoc(doc(db, "enfants", id));
     };
 
-    window.mettreAJourCours = async function(id, planningActuel, jour, creneau, valeur) {
-        const p = JSON.parse(JSON.stringify(planningActuel));
-        p.cours[jour][creneau] = valeur;
-        await updateDoc(doc(db, "enfants", id), { planning: p });
+    window.toggleFormulaireAjout = function(enfantId) {
+        const panneau = document.getElementById(`form-ajout-${enfantId}`);
+        panneau.classList.toggle("visible");
     };
 
-    window.mettreAJourSoir = async function(id, planningActuel, jour, valeur) {
-        const p = JSON.parse(JSON.stringify(planningActuel));
-        p.soir[jour] = valeur;
-        await updateDoc(doc(db, "enfants", id), { planning: p });
+    window.ajouterEvenement = async function(enfantId) {
+        const jour = document.getElementById(`ajout-jour-${enfantId}`).value;
+        const debut = document.getElementById(`ajout-debut-${enfantId}`).value;
+        const fin = document.getElementById(`ajout-fin-${enfantId}`).value;
+        const label = document.getElementById(`ajout-label-${enfantId}`).value.trim();
+        const type = document.getElementById(`ajout-type-${enfantId}`).value;
+
+        if (!debut || !fin || label === "") {
+            alert("Merci de renseigner l'heure de début, de fin et le nom.");
+            return;
+        }
+        if (heureVersMinutes(fin) <= heureVersMinutes(debut)) {
+            alert("L'heure de fin doit être après l'heure de début.");
+            return;
+        }
+
+        const enfant = enfantsActuels.find(e => e.id === enfantId);
+        const nouvelEvenement = { id: genererId(), jour, debut, fin, label, type };
+        const nouveauxEvenements = [...(enfant.evenements || []), nouvelEvenement];
+        await updateDoc(doc(db, "enfants", enfantId), { evenements: nouveauxEvenements });
+
+        document.getElementById(`ajout-label-${enfantId}`).value = "";
+        document.getElementById(`form-ajout-${enfantId}`).classList.remove("visible");
     };
 
-    onSnapshot(enfantsRef, (snapshot) => {
+    window.ouvrirEditeur = function(enfantId, evenementId) {
+        const enfant = enfantsActuels.find(e => e.id === enfantId);
+        const evt = enfant.evenements.find(ev => ev.id === evenementId);
+        if (!evt) return;
+
+        document.getElementById(`edit-jour-${enfantId}`).value = evt.jour;
+        document.getElementById(`edit-debut-${enfantId}`).value = evt.debut;
+        document.getElementById(`edit-fin-${enfantId}`).value = evt.fin;
+        document.getElementById(`edit-label-${enfantId}`).value = evt.label;
+        document.getElementById(`edit-type-${enfantId}`).value = evt.type;
+
+        const panneau = document.getElementById(`form-edit-${enfantId}`);
+        panneau.dataset.evenementId = evenementId;
+        panneau.classList.add("visible");
+        document.getElementById(`form-ajout-${enfantId}`).classList.remove("visible");
+    };
+
+    window.enregistrerEvenement = async function(enfantId) {
+        const panneau = document.getElementById(`form-edit-${enfantId}`);
+        const evenementId = panneau.dataset.evenementId;
+        const jour = document.getElementById(`edit-jour-${enfantId}`).value;
+        const debut = document.getElementById(`edit-debut-${enfantId}`).value;
+        const fin = document.getElementById(`edit-fin-${enfantId}`).value;
+        const label = document.getElementById(`edit-label-${enfantId}`).value.trim();
+        const type = document.getElementById(`edit-type-${enfantId}`).value;
+
+        if (!debut || !fin || label === "") {
+            alert("Merci de renseigner l'heure de début, de fin et le nom.");
+            return;
+        }
+        if (heureVersMinutes(fin) <= heureVersMinutes(debut)) {
+            alert("L'heure de fin doit être après l'heure de début.");
+            return;
+        }
+
+        const enfant = enfantsActuels.find(e => e.id === enfantId);
+        const nouveauxEvenements = enfant.evenements.map(ev =>
+            ev.id === evenementId ? { id: evenementId, jour, debut, fin, label, type } : ev
+        );
+        await updateDoc(doc(db, "enfants", enfantId), { evenements: nouveauxEvenements });
+        panneau.classList.remove("visible");
+    };
+
+    window.supprimerEvenement = async function(enfantId) {
+        const panneau = document.getElementById(`form-edit-${enfantId}`);
+        const evenementId = panneau.dataset.evenementId;
+        const enfant = enfantsActuels.find(e => e.id === enfantId);
+        const nouveauxEvenements = enfant.evenements.filter(ev => ev.id !== evenementId);
+        await updateDoc(doc(db, "enfants", enfantId), { evenements: nouveauxEvenements });
+        panneau.classList.remove("visible");
+    };
+
+    window.fermerEditeur = function(enfantId) {
+        document.getElementById(`form-edit-${enfantId}`).classList.remove("visible");
+    };
+
+    function construireGrille(enfant) {
+        const evenements = enfant.evenements || [];
+
+        let labelsHeures = "";
+        for (let h = HEURE_DEBUT_GRILLE; h < HEURE_FIN_GRILLE; h++) {
+            const ligneDebut = (h - HEURE_DEBUT_GRILLE) * LIGNES_PAR_HEURE + 1;
+            labelsHeures += `<div class="heure-label" style="grid-row:${ligneDebut} / span ${LIGNES_PAR_HEURE};">${h}h</div>`;
+        }
+
+        let colonnesFond = "";
+        for (let c = 0; c < 7; c++) {
+            colonnesFond += `<div class="colonne-fond" style="grid-column:${c + 2}; grid-row: 1 / ${TOTAL_LIGNES + 1};"></div>`;
+        }
+
+        let blocsEvenements = "";
+        evenements.forEach(evt => {
+            const colIndex = JOURS.indexOf(evt.jour) + 2;
+            const ligneDebut = minutesVersLigne(heureVersMinutes(evt.debut));
+            const ligneFin = minutesVersLigne(heureVersMinutes(evt.fin));
+            blocsEvenements += `
+                <div class="evenement type-${evt.type}"
+                     style="grid-column:${colIndex}; grid-row:${ligneDebut} / ${ligneFin};"
+                     onclick="ouvrirEditeur('${enfant.id}', '${evt.id}')">
+                    <strong>${evt.label}</strong>
+                    <span class="heure-evt">${evt.debut}–${evt.fin}</span>
+                </div>
+            `;
+        });
+
+        let entetesJours = "";
+        JOURS_LABEL.forEach(j => entetesJours += `<div class="jour-label">${j}</div>`);
+
+        return `
+            <div class="planning-semaine">
+                <div class="planning-entetes">
+                    <div></div>
+                    ${entetesJours}
+                </div>
+                <div class="planning-grille">
+                    ${labelsHeures}
+                    ${colonnesFond}
+                    ${blocsEvenements}
+                </div>
+            </div>
+        `;
+    }
+
+    function optionsJours(idPrefix, enfantId) {
+        return JOURS.map((j, i) =>
+            `<option value="${j}">${JOURS_LABEL[i]}</option>`
+        ).join("");
+    }
+
+    function construireFormulaire(prefixe, enfantId, boutons) {
+        return `
+            <div class="champ-form">
+                <label>Jour</label>
+                <select id="${prefixe}-jour-${enfantId}">${optionsJours(prefixe, enfantId)}</select>
+            </div>
+            <div class="champ-form">
+                <label>Début</label>
+                <input type="time" id="${prefixe}-debut-${enfantId}">
+            </div>
+            <div class="champ-form">
+                <label>Fin</label>
+                <input type="time" id="${prefixe}-fin-${enfantId}">
+            </div>
+            <div class="champ-form" style="flex:1; min-width:140px;">
+                <label>Nom (matière / activité)</label>
+                <input type="text" id="${prefixe}-label-${enfantId}" placeholder="Ex : Mathématiques">
+            </div>
+            <div class="champ-form">
+                <label>Type</label>
+                <select id="${prefixe}-type-${enfantId}">
+                    <option value="cours">Cours</option>
+                    <option value="activite">Activité</option>
+                </select>
+            </div>
+            ${boutons}
+        `;
+    }
+
+    function render() {
         const conteneur = document.getElementById("listeEnfants");
         conteneur.innerHTML = "";
-        const enfants = [];
-        snapshot.forEach((docSnap) => enfants.push({ id: docSnap.id, ...docSnap.data() }));
 
-        enfants.forEach((enfant) => {
-            const planning = enfant.planning && enfant.planning.cours ? enfant.planning : planningVide();
+        enfantsActuels.forEach((enfant) => {
             const carte = document.createElement("div");
             carte.className = "carte-enfant";
-
-            // Entête de tableau (jours)
-            let enteteJours = "";
-            joursEcoleAffiches.forEach(j => enteteJours += `<th>${j}</th>`);
-
-            // Lignes par créneau horaire
-            let lignes = "";
-            creneaux.forEach(creneau => {
-                let cellules = "";
-                joursEcole.forEach(jour => {
-                    const val = (planning.cours[jour] && planning.cours[jour][creneau]) || "";
-                    cellules += `<td><input type="text" value="${val}" placeholder="—"
-                        data-jour="${jour}" data-creneau="${creneau}"></td>`;
-                });
-                lignes += `<tr><td class="heure">${creneau}</td>${cellules}</tr>`;
-            });
-
-            // Activités du soir
-            let casesSoir = "";
-            joursSemaine.forEach((jour, i) => {
-                const val = planning.soir[jour] || "";
-                casesSoir += `
-                    <div class="case-soir">
-                        <label>${joursSemaineAffiches[i]}</label>
-                        <input type="text" value="${val}" placeholder="—" data-jour-soir="${jour}">
-                    </div>
-                `;
-            });
 
             carte.innerHTML = `
                 <div class="carte-enfant-entete">
                     <h3>${enfant.nom}</h3>
                     <button class="supprimer" onclick="supprimerEnfant('${enfant.id}')">✕ Retirer</button>
                 </div>
-                <h3 class="soustitre">Emploi du temps scolaire</h3>
-                <div class="table-scroll">
-                    <table class="grille-cours">
-                        <thead><tr><th></th>${enteteJours}</tr></thead>
-                        <tbody>${lignes}</tbody>
-                    </table>
-                </div>
-                <h3 class="soustitre">Activités du soir</h3>
-                <div class="grille-soir">${casesSoir}</div>
-            `;
 
-            carte.querySelectorAll("input[data-creneau]").forEach(input => {
-                input.addEventListener("change", (e) => {
-                    window.mettreAJourCours(enfant.id, planning, e.target.dataset.jour, e.target.dataset.creneau, e.target.value);
-                });
-            });
-            carte.querySelectorAll("input[data-jour-soir]").forEach(input => {
-                input.addEventListener("change", (e) => {
-                    window.mettreAJourSoir(enfant.id, planning, e.target.dataset.jourSoir, e.target.value);
-                });
-            });
+                <div class="barre-outils-planning">
+                    <button class="action" onclick="toggleFormulaireAjout('${enfant.id}')">+ Ajouter un créneau</button>
+                </div>
+
+                <div class="panneau-formulaire" id="form-ajout-${enfant.id}">
+                    ${construireFormulaire("ajout", enfant.id, `<button class="action" onclick="ajouterEvenement('${enfant.id}')">Ajouter</button>`)}
+                </div>
+
+                <div class="panneau-formulaire" id="form-edit-${enfant.id}">
+                    ${construireFormulaire("edit", enfant.id, `
+                        <button class="action" onclick="enregistrerEvenement('${enfant.id}')">Enregistrer</button>
+                        <button class="action discret" onclick="supprimerEvenement('${enfant.id}')">Supprimer</button>
+                        <button class="lien-discret" onclick="fermerEditeur('${enfant.id}')">Annuler</button>
+                    `)}
+                </div>
+
+                <div class="table-scroll">
+                    ${construireGrille(enfant)}
+                </div>
+            `;
 
             conteneur.appendChild(carte);
         });
 
-        document.getElementById("compteurEnfants").textContent = enfants.length;
+        document.getElementById("compteurEnfants").textContent = enfantsActuels.length;
+    }
+
+    onSnapshot(enfantsRef, (snapshot) => {
+        enfantsActuels = [];
+        snapshot.forEach((d) => enfantsActuels.push({ id: d.id, ...d.data() }));
+        render();
     });
 
-    /* ---------- NAVIGATION ---------- */
+    /* ================= NAVIGATION ================= */
     window.changerOnglet = function(nom, btn) {
         document.querySelectorAll(".onglet").forEach(el => el.classList.remove("actif"));
         document.querySelectorAll("nav button").forEach(el => el.classList.remove("actif"));
@@ -350,7 +513,7 @@
         btn.classList.add("actif");
     };
 
-    /* ---------- DATE DU JOUR ---------- */
+    /* ================= DATE DU JOUR ================= */
     const nomsJours = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
     const nomsMois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
     const aujourdhui = new Date();
