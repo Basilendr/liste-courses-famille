@@ -19,50 +19,20 @@
         --terracotta: #B5654A;
     }
     * { box-sizing: border-box; }
-    body {
-        margin: 0;
-        font-family: 'Inter', sans-serif;
-        color: var(--ink);
-        background: var(--parchment);
-    }
-    .layout {
-        display: flex;
-        min-height: 100vh;
-    }
+    body { margin: 0; font-family: 'Inter', sans-serif; color: var(--ink); background: var(--parchment); }
+    .layout { display: flex; min-height: 100vh; }
 
-    /* Sidebar */
     aside {
-        width: 220px;
-        flex-shrink: 0;
-        background: var(--navy);
-        padding: 28px 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 28px;
+        width: 220px; flex-shrink: 0; background: var(--navy);
+        padding: 28px 16px; display: flex; flex-direction: column; gap: 28px;
     }
-    .logo {
-        font-family: 'Fraunces', serif;
-        font-weight: 600;
-        font-size: 22px;
-        color: var(--parchment);
-        margin: 0;
-        padding: 0 8px;
-    }
+    .logo { font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; color: var(--parchment); margin: 0; padding: 0 8px; }
     nav { display: flex; flex-direction: column; gap: 4px; }
     nav button {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-align: left;
-        font-family: 'Inter', sans-serif;
-        font-size: 15px;
-        font-weight: 500;
-        padding: 11px 12px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        color: rgba(255,255,255,0.6);
-        background: transparent;
+        display: flex; align-items: center; gap: 10px; text-align: left;
+        font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 500;
+        padding: 11px 12px; border: none; border-radius: 8px; cursor: pointer;
+        color: rgba(255,255,255,0.6); background: transparent;
     }
     nav button:hover { background: rgba(255,255,255,0.06); color: white; }
     nav button.actif { color: white; }
@@ -71,98 +41,36 @@
     nav button[data-tab="planning"].actif { background: var(--blue); }
     nav button[data-tab="taches"].actif { background: var(--terracotta); }
 
-    /* Contenu principal */
-    main {
-        flex: 1;
-        padding: 40px 36px 60px;
-        max-width: 720px;
-    }
+    main { flex: 1; padding: 40px 36px 60px; max-width: 780px; }
     .onglet { display: none; animation: apparition 0.25s ease; }
     .onglet.actif { display: block; }
-    @keyframes apparition {
-        from { opacity: 0; transform: translateY(4px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes apparition { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    h1.titre-page {
-        font-family: 'Fraunces', serif;
-        font-weight: 600;
-        font-size: 28px;
-        margin: 0 0 4px;
-    }
-    .date-jour {
-        color: var(--ink-soft);
-        font-size: 15px;
-        margin: 0 0 32px;
-        text-transform: capitalize;
-    }
+    h1.titre-page { font-family: 'Fraunces', serif; font-weight: 600; font-size: 28px; margin: 0 0 4px; }
+    .date-jour { color: var(--ink-soft); font-size: 15px; margin: 0 0 32px; text-transform: capitalize; }
+    h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; margin: 0 0 20px; }
 
-    h2 {
-        font-family: 'Fraunces', serif;
-        font-weight: 600;
-        font-size: 21px;
-        margin: 0 0 20px;
-    }
-
-    /* Tuiles du tableau de bord */
-    .tuiles {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-    }
-    .tuile {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        border-top: 3px solid var(--gold);
-    }
+    .tuiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .tuile { background: white; border-radius: 10px; padding: 20px; border-top: 3px solid var(--gold); }
     .tuile.planning { border-top-color: var(--blue); }
     .tuile.taches { border-top-color: var(--terracotta); }
-    .tuile .chiffre {
-        font-family: 'Fraunces', serif;
-        font-size: 30px;
-        font-weight: 600;
-        margin: 0;
-    }
-    .tuile .label {
-        font-size: 14px;
-        color: var(--ink-soft);
-        margin: 4px 0 0;
-    }
+    .tuile .chiffre { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0; }
+    .tuile .label { font-size: 14px; color: var(--ink-soft); margin: 4px 0 0; }
 
     .ajout-zone { display: flex; gap: 8px; margin-bottom: 24px; }
     input[type="text"] {
-        flex: 1;
-        padding: 12px 14px;
-        font-family: 'Inter', sans-serif;
-        font-size: 15px;
-        border: 1px solid #E3DBC9;
-        border-radius: 8px;
-        background: white;
-        color: var(--ink);
+        flex: 1; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 15px;
+        border: 1px solid #E3DBC9; border-radius: 8px; background: white; color: var(--ink);
     }
     input[type="text"]:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
     button.action {
-        padding: 12px 20px;
-        font-family: 'Inter', sans-serif;
-        font-size: 15px;
-        font-weight: 500;
-        background: var(--gold);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
+        padding: 12px 20px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 500;
+        background: var(--gold); color: white; border: none; border-radius: 8px; cursor: pointer;
     }
     button.action:hover { background: var(--gold-dark); }
 
     ul { list-style: none; padding: 0; margin: 0; background: white; border-radius: 10px; }
-    li {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 16px;
-        border-bottom: 1px solid #EAE3D2;
-    }
+    li { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #EAE3D2; }
     li:last-child { border-bottom: none; }
     li.achete span { text-decoration: line-through; color: var(--ink-soft); }
     .gauche { display: flex; align-items: center; gap: 12px; }
@@ -172,20 +80,38 @@
 
     .a-venir { color: var(--ink-soft); font-size: 15px; line-height: 1.6; padding: 20px 0; }
 
-    /* Responsive : sidebar en haut sur mobile */
+    /* Planning */
+    .carte-enfant {
+        background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px;
+        border-top: 3px solid var(--blue);
+    }
+    .carte-enfant-entete {
+        display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+    }
+    .carte-enfant-entete h3 {
+        font-family: 'Fraunces', serif; font-weight: 600; font-size: 18px; margin: 0;
+    }
+    table.planning-grille { width: 100%; border-collapse: collapse; font-size: 14px; }
+    table.planning-grille th {
+        text-align: left; font-weight: 500; color: var(--ink-soft); font-size: 13px;
+        padding: 6px 8px; border-bottom: 1px solid #EAE3D2;
+    }
+    table.planning-grille td { padding: 6px 8px; border-bottom: 1px solid #F1ECDF; }
+    table.planning-grille td:first-child {
+        font-weight: 500; white-space: nowrap; color: var(--ink);
+    }
+    table.planning-grille input[type="text"] {
+        width: 100%; padding: 7px 9px; font-size: 13px; border: 1px solid #E3DBC9;
+        border-radius: 6px; background: #FDFBF5;
+    }
+
     @media (max-width: 700px) {
         .layout { flex-direction: column; }
-        aside {
-            width: 100%;
-            flex-direction: row;
-            align-items: center;
-            padding: 16px;
-            gap: 16px;
-            overflow-x: auto;
-        }
+        aside { width: 100%; flex-direction: row; align-items: center; padding: 16px; gap: 16px; overflow-x: auto; }
         nav { flex-direction: row; }
         main { padding: 28px 20px 50px; }
         .tuiles { grid-template-columns: 1fr; }
+        table.planning-grille { font-size: 12px; }
     }
 </style>
 </head>
@@ -212,8 +138,8 @@
                     <p class="label">articles à acheter</p>
                 </div>
                 <div class="tuile planning">
-                    <p class="chiffre">–</p>
-                    <p class="label">le planning arrive bientôt</p>
+                    <p class="chiffre" id="compteurEnfants">–</p>
+                    <p class="label">enfant(s) dans le planning</p>
                 </div>
                 <div class="tuile taches">
                     <p class="chiffre">–</p>
@@ -233,12 +159,16 @@
 
         <section id="planning" class="onglet">
             <h2>Planning familial</h2>
-            <p class="a-venir">L'emploi du temps de l'école et les activités du soir arrivent à la prochaine étape.</p>
+            <div class="ajout-zone">
+                <input type="text" id="nouvelEnfant" placeholder="Prénom de l'enfant...">
+                <button class="action" onclick="ajouterEnfant()">Ajouter un enfant</button>
+            </div>
+            <div id="listeEnfants"></div>
         </section>
 
         <section id="taches" class="onglet">
             <h2>Tâches ménagères</h2>
-            <p class="a-venir">La rotation automatique des tâches arrive juste après le planning.</p>
+            <p class="a-venir">La rotation automatique des tâches arrive à la prochaine étape.</p>
         </section>
     </main>
 </div>
@@ -260,6 +190,8 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
+    /* ---------- COURSES ---------- */
     const articlesRef = collection(db, "articles");
 
     window.ajouterArticle = async function() {
@@ -269,22 +201,18 @@
         await addDoc(articlesRef, { nom: texte, achete: false, dateAjout: Date.now() });
         input.value = "";
     };
-
     window.toggleAchete = async function(id, etatActuel) {
         await updateDoc(doc(db, "articles", id), { achete: !etatActuel });
     };
-
     window.supprimerArticle = async function(id) {
         await deleteDoc(doc(db, "articles", id));
     };
-
     onSnapshot(articlesRef, (snapshot) => {
         const liste = document.getElementById("listeArticles");
         liste.innerHTML = "";
         const articles = [];
         snapshot.forEach((docSnap) => articles.push({ id: docSnap.id, ...docSnap.data() }));
         articles.sort((a, b) => a.dateAjout - b.dateAjout);
-
         articles.forEach((article) => {
             const li = document.createElement("li");
             if (article.achete) li.classList.add("achete");
@@ -298,16 +226,93 @@
             `;
             liste.appendChild(li);
         });
-
-        // Mise à jour du compteur sur la page d'accueil
-        const restants = articles.filter(a => !a.achete).length;
-        document.getElementById("compteurCourses").textContent = restants;
+        document.getElementById("compteurCourses").textContent = articles.filter(a => !a.achete).length;
     });
-
     document.getElementById("nouvelArticle").addEventListener("keypress", (e) => {
         if (e.key === "Enter") ajouterArticle();
     });
 
+    /* ---------- PLANNING ---------- */
+    const enfantsRef = collection(db, "enfants");
+    const jours = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+    const joursAffiches = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+
+    function planningVide() {
+        const p = {};
+        jours.forEach(j => p[j] = { ecole: "", soir: "" });
+        return p;
+    }
+
+    window.ajouterEnfant = async function() {
+        const input = document.getElementById("nouvelEnfant");
+        const nom = input.value.trim();
+        if (nom === "") return;
+        await addDoc(enfantsRef, { nom: nom, planning: planningVide() });
+        input.value = "";
+    };
+
+    window.supprimerEnfant = async function(id) {
+        await deleteDoc(doc(db, "enfants", id));
+    };
+
+    window.mettreAJourPlanning = async function(id, planningActuel, jour, champ, valeur) {
+        const nouveauPlanning = { ...planningActuel };
+        nouveauPlanning[jour] = { ...nouveauPlanning[jour], [champ]: valeur };
+        await updateDoc(doc(db, "enfants", id), { planning: nouveauPlanning });
+    };
+
+    onSnapshot(enfantsRef, (snapshot) => {
+        const conteneur = document.getElementById("listeEnfants");
+        conteneur.innerHTML = "";
+        const enfants = [];
+        snapshot.forEach((docSnap) => enfants.push({ id: docSnap.id, ...docSnap.data() }));
+
+        enfants.forEach((enfant) => {
+            const planning = enfant.planning || planningVide();
+            const carte = document.createElement("div");
+            carte.className = "carte-enfant";
+
+            let lignes = "";
+            jours.forEach((jour, i) => {
+                const ecoleVal = (planning[jour] && planning[jour].ecole) || "";
+                const soirVal = (planning[jour] && planning[jour].soir) || "";
+                lignes += `
+                    <tr>
+                        <td>${joursAffiches[i]}</td>
+                        <td><input type="text" value="${ecoleVal}" placeholder="École..."
+                             data-champ="ecole" data-jour="${jour}"></td>
+                        <td><input type="text" value="${soirVal}" placeholder="Activité du soir..."
+                             data-champ="soir" data-jour="${jour}"></td>
+                    </tr>
+                `;
+            });
+
+            carte.innerHTML = `
+                <div class="carte-enfant-entete">
+                    <h3>${enfant.nom}</h3>
+                    <button class="supprimer" onclick="supprimerEnfant('${enfant.id}')">✕ Retirer</button>
+                </div>
+                <table class="planning-grille">
+                    <thead>
+                        <tr><th>Jour</th><th>École</th><th>Activité du soir</th></tr>
+                    </thead>
+                    <tbody>${lignes}</tbody>
+                </table>
+            `;
+
+            carte.querySelectorAll("input[type='text']").forEach(input => {
+                input.addEventListener("change", (e) => {
+                    window.mettreAJourPlanning(enfant.id, planning, e.target.dataset.jour, e.target.dataset.champ, e.target.value);
+                });
+            });
+
+            conteneur.appendChild(carte);
+        });
+
+        document.getElementById("compteurEnfants").textContent = enfants.length;
+    });
+
+    /* ---------- NAVIGATION ---------- */
     window.changerOnglet = function(nom, btn) {
         document.querySelectorAll(".onglet").forEach(el => el.classList.remove("actif"));
         document.querySelectorAll("nav button").forEach(el => el.classList.remove("actif"));
@@ -315,12 +320,12 @@
         btn.classList.add("actif");
     };
 
-    // Date du jour en français
-    const jours = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
-    const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+    /* ---------- DATE DU JOUR ---------- */
+    const nomsJours = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+    const nomsMois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
     const aujourdhui = new Date();
     document.getElementById("dateJour").textContent =
-        `${jours[aujourdhui.getDay()]} ${aujourdhui.getDate()} ${mois[aujourdhui.getMonth()]}`;
+        `${nomsJours[aujourdhui.getDay()]} ${aujourdhui.getDate()} ${nomsMois[aujourdhui.getMonth()]}`;
 </script>
 </body>
 </html>
