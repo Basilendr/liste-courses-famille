@@ -2,8 +2,11 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Notre Famille</title>
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,14 +18,23 @@
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Inter', sans-serif; color: var(--ink); background: var(--parchment); }
+    button { font-family: inherit; }
     .layout { display: flex; min-height: 100vh; }
+
+    /* ---- Interactions generales ---- */
+    button.action:active, .nav-btn:active, .sous-onglet-btn:active, .lien-discret-clair:active { transform: scale(0.96); }
+    button.action, .nav-btn, .sous-onglet-btn { transition: transform .1s ease, background .15s ease, box-shadow .15s ease; }
+    .tuile, .carte-enfant, li { transition: box-shadow .15s ease, transform .15s ease; }
+    .tuile:hover, .carte-enfant:hover { box-shadow: 0 6px 18px rgba(32,36,43,0.07); transform: translateY(-1px); }
+    input[type="checkbox"] { transition: transform .15s ease; }
+    input[type="checkbox"]:active { transform: scale(1.15); }
 
     aside { width: 230px; flex-shrink: 0; background: var(--navy); padding: 24px 16px; display: flex; flex-direction: column; gap: 22px; }
     .logo { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; color: var(--parchment); margin: 0; padding: 0 8px; }
 
     .maison-actuelle { padding: 10px 8px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .nom-maison { color: white; font-family: 'Fraunces', serif; font-size: 14px; margin: 0 0 8px; }
-    .actions-maison { display: flex; gap: 10px; }
+    .actions-maison { display: flex; gap: 10px; flex-wrap: wrap; }
     .lien-discret-clair {
         background: none; border: none; color: rgba(255,255,255,0.55); font-size: 12.5px;
         cursor: pointer; padding: 0; text-decoration: underline;
@@ -32,23 +44,25 @@
     .lien-discret-clair.lien-danger:hover { color: #EFA491; }
 
     nav { display: flex; flex-direction: column; gap: 4px; }
-    nav button {
+    nav button.nav-btn {
         display: flex; align-items: center; gap: 10px; text-align: left;
         font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 500;
         padding: 11px 12px; border: none; border-radius: 8px; cursor: pointer;
         color: rgba(255,255,255,0.6); background: transparent;
     }
-    nav button:hover { background: rgba(255,255,255,0.06); color: white; }
-    nav button.actif { color: white; }
-    nav button[data-tab="accueil"].actif { background: rgba(255,255,255,0.08); }
-    nav button[data-tab="courses"].actif { background: var(--gold); color: var(--navy); }
-    nav button[data-tab="planning"].actif { background: var(--blue); }
-    nav button[data-tab="taches"].actif { background: var(--terracotta); }
+    nav button.nav-btn:hover { background: rgba(255,255,255,0.06); color: white; }
+    nav button.nav-btn.actif { color: white; }
+    nav button.nav-btn[data-tab="accueil"].actif { background: rgba(255,255,255,0.08); }
+    nav button.nav-btn[data-tab="courses"].actif { background: var(--gold); color: var(--navy); }
+    nav button.nav-btn[data-tab="planning"].actif { background: var(--blue); }
+    nav button.nav-btn[data-tab="taches"].actif { background: var(--terracotta); }
 
     main { flex: 1; padding: 40px 36px 60px; max-width: 960px; }
     .onglet { display: none; animation: apparition 0.25s ease; }
     .onglet.actif { display: block; }
     @keyframes apparition { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes apparitionCarte { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes coche { 0% { transform: scale(1); } 40% { transform: scale(1.25); } 100% { transform: scale(1); } }
 
     h1.titre-page { font-family: 'Fraunces', serif; font-weight: 600; font-size: 28px; margin: 0 0 4px; }
     .date-jour { color: var(--ink-soft); font-size: 15px; margin: 0 0 32px; text-transform: capitalize; }
@@ -56,15 +70,17 @@
     h3.soustitre { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; margin: 24px 0 12px; color: var(--ink-soft); }
 
     .tuiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .tuile { background: white; border-radius: 10px; padding: 20px; border-top: 3px solid var(--gold); }
+    .tuile { background: white; border-radius: 10px; padding: 20px; border-top: 3px solid var(--gold); animation: apparitionCarte .3s ease; }
     .tuile.planning { border-top-color: var(--blue); }
     .tuile.taches { border-top-color: var(--terracotta); }
     .tuile .chiffre { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0; }
     .tuile .label { font-size: 14px; color: var(--ink-soft); margin: 4px 0 0; }
 
-    input[type="text"], input[type="time"], input[type="number"], input[type="date"], select {
+    input[type="text"], input[type="time"], input[type="number"], input[type="date"],
+    input[type="email"], input[type="password"], select {
         padding: 11px 13px; font-family: 'Inter', sans-serif; font-size: 14px;
         border: 1px solid #E3DBC9; border-radius: 8px; background: white; color: var(--ink);
+        width: 100%;
     }
     input:focus, select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
     button.action {
@@ -73,25 +89,31 @@
     }
     button.action:hover { background: var(--gold-dark); }
     button.action.discret { background: var(--navy); }
+    button.action:disabled { opacity: 0.55; cursor: not-allowed; }
     button.lien-discret {
         background: none; border: none; color: var(--ink-soft); font-size: 13px;
         cursor: pointer; text-decoration: underline; padding: 4px;
     }
 
     ul { list-style: none; padding: 0; margin: 0; background: white; border-radius: 10px; }
-    li { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #EAE3D2; }
+    li { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #EAE3D2; animation: apparitionCarte .25s ease; }
     li:last-child { border-bottom: none; }
     li.achete span.nom-article { text-decoration: line-through; color: var(--ink-soft); }
     span.nom-article.achete { text-decoration: line-through; color: var(--ink-soft); }
     .gauche { display: flex; align-items: center; gap: 12px; }
     .gauche input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--gold); }
+    .gauche input[type="checkbox"]:checked { animation: coche .25s ease; }
     .supprimer { background: none; border: none; color: var(--ink-soft); font-size: 16px; cursor: pointer; padding: 4px 8px; }
     .supprimer:hover { color: var(--terracotta); }
-    .a-venir { color: var(--ink-soft); font-size: 15px; line-height: 1.6; padding: 20px 0; }
     .note-info {
         font-size: 13px; color: var(--ink-soft); background: #F1ECDF; padding: 10px 14px;
         border-radius: 8px; margin-bottom: 20px;
     }
+    .etat-vide {
+        text-align: center; padding: 40px 20px; color: var(--ink-soft); background: white; border-radius: 10px;
+    }
+    .etat-vide .emoji-vide { font-size: 30px; display: block; margin-bottom: 8px; }
+    .etat-vide p { margin: 0; font-size: 14.5px; }
 
     .badge-statut { font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 12px; white-space: nowrap; }
     .statut-attente { background: #F1ECDF; color: var(--ink-soft); }
@@ -112,12 +134,12 @@
         display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
         background: white; padding: 14px; border-radius: 10px;
     }
-    .ajout-zone-courses input[name="nom"] { flex: 2; min-width: 160px; }
+    .ajout-zone-courses input[name="nom"] { flex: 2; min-width: 160px; width: auto; }
     .ajout-zone-courses input[name="quantite"] { width: 90px; }
-    .ajout-zone-courses select { flex: 1; min-width: 170px; }
-    .ajout-zone-courses input[name="note"] { flex: 2; min-width: 180px; }
+    .ajout-zone-courses select { flex: 1; min-width: 170px; width: auto; }
+    .ajout-zone-courses input[name="note"] { flex: 2; min-width: 180px; width: auto; }
 
-    .groupe-categorie { margin-bottom: 20px; }
+    .groupe-categorie { margin-bottom: 20px; animation: apparitionCarte .25s ease; }
     .groupe-categorie h3 {
         font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; margin: 0 0 8px 2px; color: var(--ink-soft);
     }
@@ -127,11 +149,12 @@
     .note-article { font-size: 12.5px; color: var(--ink-soft); font-style: italic; display: block; }
 
     /* ---- Planning ---- */
-    .carte-enfant { background: white; border-radius: 10px; padding: 22px; margin-bottom: 28px; border-top: 3px solid var(--blue); }
+    .carte-enfant { background: white; border-radius: 10px; padding: 22px; margin-bottom: 28px; border-top: 3px solid var(--blue); animation: apparitionCarte .3s ease; }
     .carte-enfant-entete { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .carte-enfant-entete h3 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; margin: 0; }
     .barre-outils-planning { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
     .ajout-zone { display: flex; gap: 8px; margin-bottom: 24px; }
+    .ajout-zone input { width: auto; flex: 1; }
 
     .panneau-formulaire {
         display: none; background: #FDFBF5; border: 1px solid #EAE3D2; border-radius: 8px;
@@ -140,6 +163,7 @@
     .panneau-formulaire.visible { display: flex; }
     .champ-form { display: flex; flex-direction: column; gap: 4px; }
     .champ-form label { font-size: 12px; color: var(--ink-soft); }
+    .champ-form input, .champ-form select { width: auto; }
 
     .table-scroll { overflow-x: auto; }
     .planning-semaine { min-width: 680px; }
@@ -160,31 +184,30 @@
     .evenement strong { display: block; font-weight: 600; }
     .evenement span.heure-evt { font-size: 10.5px; opacity: 0.75; }
 
-    /* ---- Écran de sélection de maison ---- */
-    .ecran-maison {
+    /* ---- Ecrans plein ecran (auth / maisons / enfant) ---- */
+    .ecran-plein {
         position: fixed; inset: 0; background: var(--navy); z-index: 100;
-        display: flex; align-items: center; justify-content: center; padding: 20px;
+        display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;
     }
-    .ecran-maison.cachee { display: none; }
-    .carte-maison {
-        background: var(--parchment); border-radius: 14px; padding: 32px; max-width: 400px;
-        width: 100%; position: relative; max-height: 90vh; overflow-y: auto;
+    .ecran-plein.cachee { display: none; }
+    .carte-ecran {
+        background: var(--parchment); border-radius: 14px; padding: 32px; max-width: 420px;
+        width: 100%; position: relative; max-height: 90vh; overflow-y: auto; margin: auto;
+        animation: apparitionCarte .3s ease;
     }
-    .carte-maison .logo-ecran {
+    .carte-ecran .logo-ecran {
         font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; margin: 0 0 4px;
     }
-    .carte-maison h2 { font-size: 17px; margin: 0 0 18px; color: var(--ink-soft); font-weight: 500; font-family: 'Inter', sans-serif; }
-    .carte-maison h3 { font-family: 'Fraunces', serif; font-size: 16px; margin: 0 0 12px; }
+    .carte-ecran h2 { font-size: 17px; margin: 0 0 18px; color: var(--ink-soft); font-weight: 500; font-family: 'Inter', sans-serif; }
+    .carte-ecran h3 { font-family: 'Fraunces', serif; font-size: 16px; margin: 18px 0 12px; }
     .fermer-ecran {
         position: absolute; top: 18px; right: 18px; background: none; border: none;
         font-size: 18px; color: var(--ink-soft); cursor: pointer;
     }
-    .champ-maison { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
-    .champ-maison label { font-size: 13px; color: var(--ink-soft); }
-    .champ-maison input, .champ-maison select { width: 100%; }
+    .champ-ecran { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .champ-ecran label { font-size: 13px; color: var(--ink-soft); }
     .separateur-ou {
-        text-align: center; color: var(--ink-soft); font-size: 13px; margin: 22px 0;
-        position: relative;
+        text-align: center; color: var(--ink-soft); font-size: 13px; margin: 22px 0; position: relative;
     }
     .separateur-ou::before, .separateur-ou::after {
         content: ""; position: absolute; top: 50%; width: 40%; height: 1px; background: #E3DBC9;
@@ -192,85 +215,229 @@
     .separateur-ou::before { left: 0; }
     .separateur-ou::after { right: 0; }
     .erreur-code { color: var(--terracotta); font-size: 13px; margin: 8px 0 0; min-height: 16px; }
+    .lien-toggle-auth { text-align: center; font-size: 13.5px; color: var(--ink-soft); margin-top: 18px; }
+    .lien-toggle-auth button { background: none; border: none; color: var(--gold-dark); font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0; font-size: inherit; }
+    .lien-secondaire { text-align: center; margin-top: 10px; }
+    .lien-secondaire button { background: none; border: none; color: rgba(255,255,255,0.75); font-size: 13.5px; cursor: pointer; text-decoration: underline; }
 
-    /* ---- Restriction accès Enfant ---- */
+    /* ---- Mes maisons ---- */
+    .carte-maison-item {
+        background: white; border-radius: 10px; padding: 16px; margin-bottom: 10px;
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .carte-maison-item .nom-maison-item { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin: 0; color: var(--ink); }
+    .code-maison-affichage {
+        font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; letter-spacing: 3px;
+        background: white; border-radius: 8px; padding: 14px; text-align: center; margin: 14px 0; color: var(--navy);
+    }
+
+    /* ---- Modale generique ---- */
+    .modal-overlay {
+        position: fixed; inset: 0; background: rgba(32,36,43,0.55); z-index: 200;
+        display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.cachee { display: none; }
+    .modal-carte {
+        background: var(--parchment); border-radius: 14px; padding: 26px; max-width: 380px; width: 100%;
+        animation: apparitionCarte .2s ease;
+    }
+    .modal-carte h3 { font-family: 'Fraunces', serif; font-size: 18px; margin: 0 0 10px; }
+    .modal-carte p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.5; margin: 0 0 16px; }
+    .modal-carte input { margin-bottom: 16px; }
+    .modal-boutons { display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* ---- En-tete mobile + barre de navigation basse ---- */
+    .entete-mobile { display: none; }
+    .barre-nav-mobile { display: none; }
+
+    /* ---- Restriction acces Enfant ---- */
     body.role-enfant .parent-seulement { display: none !important; }
     body.role-enfant .evenement { pointer-events: none; cursor: default; }
 
     @media (max-width: 700px) {
+        aside { display: none; }
+        .entete-mobile {
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 40; background: var(--navy); color: white;
+            padding: 14px 18px; padding-top: max(14px, env(safe-area-inset-top));
+        }
+        .entete-mobile-nom { font-family: 'Fraunces', serif; font-size: 15px; }
+        .menu-mobile-conteneur { position: relative; }
+        .bouton-menu-mobile { background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 4px 8px; }
+        .menu-mobile-panneau {
+            position: absolute; right: 0; top: 34px; background: white; border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18); padding: 10px; display: flex; flex-direction: column; gap: 10px;
+            min-width: 180px; z-index: 50;
+        }
+        .menu-mobile-panneau.cachee { display: none; }
+        .menu-mobile-panneau .lien-discret-clair { color: var(--ink-soft); text-align: left; padding: 4px 2px; }
+        .menu-mobile-panneau .lien-discret-clair:hover { color: var(--ink); }
+        .menu-mobile-panneau .lien-danger { color: var(--terracotta); }
+
+        .barre-nav-mobile {
+            display: flex; flex-direction: row; position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+            background: white; border-top: 1px solid #EAE3D2; padding: 6px 4px;
+            padding-bottom: max(6px, env(safe-area-inset-bottom));
+        }
+        .barre-nav-mobile .nav-btn {
+            flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+            background: none; border: none; padding: 6px 2px; border-radius: 10px; cursor: pointer;
+            color: var(--ink-soft);
+        }
+        .barre-nav-mobile .nav-btn span { font-size: 19px; }
+        .barre-nav-mobile .nav-btn small { font-size: 11px; font-weight: 500; }
+        .barre-nav-mobile .nav-btn.actif { color: var(--gold-dark); }
+
         .layout { flex-direction: column; }
-        aside { width: 100%; flex-direction: column; padding: 16px; gap: 14px; }
-        main { padding: 28px 20px 50px; }
+        main { padding: 20px 16px 90px; }
         .tuiles { grid-template-columns: 1fr; }
     }
 </style>
 </head>
 <body>
 
-<!-- ============ ÉCRAN DE SÉLECTION / CRÉATION DE MAISON ============ -->
-<div class="ecran-maison" id="ecranMaison">
-    <div class="carte-maison">
-        <button class="fermer-ecran" id="boutonFermerEcran" onclick="fermerEcranMaison()">✕</button>
+<!-- ============ ECRAN AUTHENTIFICATION ============ -->
+<div class="ecran-plein" id="ecranAuth">
+    <div class="carte-ecran">
+        <p class="logo-ecran">Notre Famille</p>
+        <h2 id="titreAuth">Connecte-toi à ton compte</h2>
+
+        <div class="champ-ecran" id="champPrenomAuth" style="display:none;">
+            <label>Ton prénom</label>
+            <input type="text" id="authPrenom" placeholder="Ex : Julie">
+        </div>
+        <div class="champ-ecran">
+            <label>Email</label>
+            <input type="email" id="authEmail" placeholder="toi@exemple.com">
+        </div>
+        <div class="champ-ecran">
+            <label>Mot de passe</label>
+            <input type="password" id="authMotDePasse" placeholder="6 caractères minimum">
+        </div>
+        <button class="action" id="boutonAuth" onclick="validerAuth()" style="width:100%;">Se connecter</button>
+        <p class="erreur-code" id="erreurAuth"></p>
+
+        <p class="lien-toggle-auth">
+            <span id="texteToggleAuth">Pas encore de compte ?</span>
+            <button onclick="basculerModeAuth()" id="boutonToggleAuth">Créer un compte</button>
+        </p>
+        <p class="lien-toggle-auth">
+            <button onclick="motDePasseOublie()">Mot de passe oublié ?</button>
+        </p>
+
+        <div class="separateur-ou">ou</div>
+        <button class="action discret" style="width:100%;" onclick="ouvrirEcranEnfant()">Je suis un enfant, j'ai un code</button>
+    </div>
+</div>
+
+<!-- ============ ECRAN MES MAISONS ============ -->
+<div class="ecran-plein cachee" id="ecranMesMaisons">
+    <div class="carte-ecran">
+        <button class="fermer-ecran" onclick="seDeconnecter()" title="Se déconnecter">✕</button>
+        <p class="logo-ecran">Mes maisons</p>
+        <h2>Choisis ou crée une maison</h2>
+
+        <div id="listeMesMaisons"></div>
+
+        <div class="separateur-ou">ou</div>
+
+        <h3>Rejoindre avec un code</h3>
+        <div class="champ-ecran">
+            <label>Code de la maison</label>
+            <input type="text" id="rejoindreMaisonCode" placeholder="Ex : AB3D-9F2K" style="text-transform:uppercase;">
+        </div>
+        <button class="action discret" style="width:100%;" onclick="rejoindreMaisonParent()">Rejoindre</button>
+
+        <div class="separateur-ou">ou</div>
+
+        <h3>Créer une nouvelle maison</h3>
+        <div class="champ-ecran">
+            <label>Nom de la maison</label>
+            <input type="text" id="nomNouvelleMaison" placeholder="Ex : Maison Julie">
+        </div>
+        <div class="champ-ecran">
+            <label>Code d'accès Enfant (que tes enfants utiliseront)</label>
+            <input type="text" id="codeEnfantNouvelleMaison" placeholder="Ex : 1234">
+        </div>
+        <button class="action" style="width:100%;" onclick="creerMaison()">Créer la maison</button>
+    </div>
+</div>
+
+<!-- ============ ECRAN ENFANT ============ -->
+<div class="ecran-plein cachee" id="ecranEnfant">
+    <div class="carte-ecran">
+        <button class="fermer-ecran" onclick="retourAuth()">✕</button>
         <p class="logo-ecran">Notre Famille</p>
 
-        <div id="blocRejoindre">
-            <h2>Choisissez votre espace</h2>
-            <div class="champ-maison">
-                <label>Maison</label>
-                <select id="selectMaisonExistante"></select>
+        <div id="blocEnfantCode">
+            <h2>Entre les codes de ta maison</h2>
+            <div class="champ-ecran">
+                <label>Code de la maison</label>
+                <input type="text" id="enfantCodeMaison" placeholder="Ex : AB3D-9F2K" style="text-transform:uppercase;">
             </div>
-            <div class="champ-maison">
-                <label>Code d'accès (parent ou enfant)</label>
-                <input type="text" id="codeAcces" placeholder="Ex : 1234">
+            <div class="champ-ecran">
+                <label>Code enfant</label>
+                <input type="text" id="enfantCodePin" placeholder="Ex : 1234">
             </div>
-            <button class="action" onclick="rejoindreMaison()">Entrer</button>
-            <p class="erreur-code" id="erreurCode"></p>
-
-            <div class="separateur-ou">ou</div>
-
-            <h3>Créer une nouvelle maison</h3>
-            <div class="champ-maison">
-                <label>Nom de la maison</label>
-                <input type="text" id="nouveauNomMaison" placeholder="Ex : Maison Julie">
-            </div>
-            <div class="champ-maison">
-                <label>Code d'accès Parent</label>
-                <input type="text" id="nouveauCodeParent" placeholder="Ex : 1234">
-            </div>
-            <div class="champ-maison">
-                <label>Code d'accès Enfant</label>
-                <input type="text" id="nouveauCodeEnfant" placeholder="Ex : 0000">
-            </div>
-            <button class="action discret" onclick="creerMaison()">Créer la maison</button>
+            <button class="action" style="width:100%;" onclick="verifierCodeEnfant()">Entrer</button>
+            <p class="erreur-code" id="erreurCodeEnfant"></p>
         </div>
 
-        <div id="blocChoixEnfant" style="display:none;">
+        <div id="blocEnfantIdentite" style="display:none;">
             <h2>Qui es-tu ?</h2>
-            <div class="champ-maison">
+            <div class="champ-ecran">
                 <label>Choisis ton prénom</label>
                 <select id="selectEnfantIdentite"></select>
             </div>
-            <button class="action" onclick="confirmerIdentiteEnfant()">Continuer</button>
+            <button class="action" style="width:100%;" onclick="confirmerIdentiteEnfant()">Continuer</button>
         </div>
     </div>
 </div>
 
-<div class="layout">
+<!-- ============ MODALE GENERIQUE (remplace alert/confirm/prompt) ============ -->
+<div class="modal-overlay cachee" id="modalGenerique">
+    <div class="modal-carte">
+        <h3 id="modaleTitre">Titre</h3>
+        <p id="modaleMessage">Message</p>
+        <input type="text" id="modaleChampSaisie" style="display:none;">
+        <div class="modal-boutons">
+            <button class="lien-discret" id="modaleBoutonAnnuler" onclick="annulerModale()">Annuler</button>
+            <button class="action" id="modaleBoutonConfirmer" onclick="validerModale()">Confirmer</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ APPLICATION ============ -->
+<div class="layout cachee" id="appLayout">
+    <header class="entete-mobile">
+        <span class="entete-mobile-nom" id="nomMaisonMobile">–</span>
+        <div class="menu-mobile-conteneur">
+            <button class="bouton-menu-mobile" onclick="toggleMenuMobile()">⋮</button>
+            <div class="menu-mobile-panneau cachee" id="menuMobilePanneau">
+                <button class="lien-discret-clair" onclick="changerDeMaison()">Changer de maison</button>
+                <button class="lien-discret-clair parent-seulement" onclick="ouvrirEcranMesMaisonsDepuisApp()">+ Nouvelle maison</button>
+                <button class="lien-discret-clair parent-seulement" onclick="seDeconnecter()">Se déconnecter</button>
+                <button class="lien-discret-clair lien-danger parent-seulement" onclick="supprimerMaisonAction()">Supprimer la maison</button>
+            </div>
+        </div>
+    </header>
+
     <aside>
         <p class="logo">Notre Famille</p>
         <div class="maison-actuelle">
             <p class="nom-maison" id="nomMaisonActuelle">–</p>
-            <div class="actions-maison parent-seulement">
-                <button class="lien-discret-clair" onclick="ouvrirEcranMaison()">Changer</button>
-                <button class="lien-discret-clair" onclick="ouvrirEcranMaisonCreation()">+ Nouvelle maison</button>
-                <button class="lien-discret-clair lien-danger" onclick="supprimerMaison()">Supprimer</button>
+            <div class="actions-maison">
+                <button class="lien-discret-clair" onclick="changerDeMaison()">Changer</button>
+                <button class="lien-discret-clair parent-seulement" onclick="ouvrirEcranMesMaisonsDepuisApp()">+ Nouvelle maison</button>
+                <button class="lien-discret-clair parent-seulement" onclick="seDeconnecter()">Déconnexion</button>
+                <button class="lien-discret-clair lien-danger parent-seulement" onclick="supprimerMaisonAction()">Supprimer</button>
             </div>
         </div>
         <nav>
-            <button class="actif" data-tab="accueil" onclick="changerOnglet('accueil', this)">🏠 Accueil</button>
-            <button data-tab="courses" onclick="changerOnglet('courses', this)">🛒 Courses</button>
-            <button data-tab="planning" onclick="changerOnglet('planning', this)">📅 Planning</button>
-            <button data-tab="taches" onclick="changerOnglet('taches', this)">🧹 Tâches</button>
+            <button class="nav-btn actif" data-tab="accueil" onclick="changerOnglet('accueil')">🏠 Accueil</button>
+            <button class="nav-btn" data-tab="courses" onclick="changerOnglet('courses')">🛒 Courses</button>
+            <button class="nav-btn" data-tab="planning" onclick="changerOnglet('planning')">📅 Planning</button>
+            <button class="nav-btn" data-tab="taches" onclick="changerOnglet('taches')">🧹 Tâches</button>
         </nav>
     </aside>
 
@@ -356,33 +523,46 @@
             </div>
         </section>
     </main>
+
+    <nav class="barre-nav-mobile">
+        <button class="nav-btn actif" data-tab="accueil" onclick="changerOnglet('accueil')"><span>🏠</span><small>Accueil</small></button>
+        <button class="nav-btn" data-tab="courses" onclick="changerOnglet('courses')"><span>🛒</span><small>Courses</small></button>
+        <button class="nav-btn" data-tab="planning" onclick="changerOnglet('planning')"><span>📅</span><small>Planning</small></button>
+        <button class="nav-btn" data-tab="taches" onclick="changerOnglet('taches')"><span>🧹</span><small>Tâches</small></button>
+    </nav>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import {
+        getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+        signOut, sendPasswordResetEmail, signInAnonymously, updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
         getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot,
-        getDocs, getDoc, setDoc
+        getDocs, getDoc, setDoc, query, where, arrayUnion
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    /* ================= FIREBASE : INITIALISATION ================= */
     const firebaseConfig = {
-        apiKey: "AIzaSyDzd-fjLhHx2FRXdcnGZy4G27yGF_h9els",
+        apiKey: "AIzaSyDz•••••••••••••••••••••••••••••••",
         authDomain: "liste-courses-famille-a0096.firebaseapp.com",
         projectId: "liste-courses-famille-a0096",
         storageBucket: "liste-courses-famille-a0096.firebasestorage.app",
         messagingSenderId: "631053249612",
         appId: "1:631053249612:web:51d4ede9f7331ff22058e9"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    /* ================= GESTION DES MAISONS ET RÔLES ================= */
+    /* ================= ETAT GLOBAL ================= */
     let maisonId = null;
     let maisonNom = null;
     let role = "parent";
     let enfantIdActuel = null;
     let enfantNomActuel = null;
+    let modeAuthInscription = false;
 
     let refCoursesSemaine = null;
     let refSpecifiques = null;
@@ -393,62 +573,286 @@
     let enfantsActuels = [];
     let tachesActuelles = [];
 
-    window.fermerEcranMaison = function() {
-        if (maisonId) document.getElementById("ecranMaison").classList.add("cachee");
-    };
-    window.ouvrirEcranMaison = function() {
-        chargerListeMaisons();
-        document.getElementById("blocRejoindre").style.display = "block";
-        document.getElementById("blocChoixEnfant").style.display = "none";
-        document.getElementById("ecranMaison").classList.remove("cachee");
-        document.getElementById("boutonFermerEcran").style.display = maisonId ? "block" : "none";
-    };
-    window.ouvrirEcranMaisonCreation = function() {
-        window.ouvrirEcranMaison();
-        document.getElementById("nouveauNomMaison").focus();
-    };
+    let desabonnements = [];
+    let intervalleExpiration = null;
 
-    async function chargerListeMaisons() {
-        const select = document.getElementById("selectMaisonExistante");
-        select.innerHTML = "";
-        const snap = await getDocs(collection(db, "maisons"));
-        if (snap.empty) {
-            select.innerHTML = `<option value="">Aucune maison créée pour l'instant</option>`;
-            return;
-        }
-        snap.forEach(d => {
-            const option = document.createElement("option");
-            option.value = d.id;
-            option.textContent = d.data().nom;
-            select.appendChild(option);
-        });
+    function detacherEcoutes() {
+        desabonnements.forEach(fn => fn());
+        desabonnements = [];
+        if (intervalleExpiration) { clearInterval(intervalleExpiration); intervalleExpiration = null; }
     }
 
-    window.rejoindreMaison = async function() {
-        const select = document.getElementById("selectMaisonExistante");
-        const idChoisi = select.value;
-        const code = document.getElementById("codeAcces").value.trim();
-        const erreur = document.getElementById("erreurCode");
+    /* ================= MODALES GENERIQUES (remplace alert/confirm/prompt) ================= */
+    let resolveModale = null;
+
+    function ouvrirModaleConfirmation({ titre, message, texteConfirmer = "Confirmer", texteAnnuler = "Annuler", danger = false }) {
+        return new Promise((resolve) => {
+            resolveModale = resolve;
+            document.getElementById("modaleTitre").textContent = titre;
+            document.getElementById("modaleMessage").textContent = message;
+            document.getElementById("modaleChampSaisie").style.display = "none";
+            const boutonConfirmer = document.getElementById("modaleBoutonConfirmer");
+            boutonConfirmer.textContent = texteConfirmer;
+            boutonConfirmer.className = danger ? "action discret" : "action";
+            const boutonAnnuler = document.getElementById("modaleBoutonAnnuler");
+            boutonAnnuler.textContent = texteAnnuler;
+            boutonAnnuler.style.display = "inline-block";
+            document.getElementById("modalGenerique").classList.remove("cachee");
+        });
+    }
+    function ouvrirModaleSaisie({ titre, message, placeholder = "" }) {
+        return new Promise((resolve) => {
+            resolveModale = resolve;
+            document.getElementById("modaleTitre").textContent = titre;
+            document.getElementById("modaleMessage").textContent = message;
+            const champ = document.getElementById("modaleChampSaisie");
+            champ.style.display = "block";
+            champ.value = "";
+            champ.placeholder = placeholder;
+            document.getElementById("modaleBoutonConfirmer").textContent = "Confirmer";
+            document.getElementById("modaleBoutonConfirmer").className = "action";
+            document.getElementById("modaleBoutonAnnuler").style.display = "inline-block";
+            document.getElementById("modalGenerique").classList.remove("cachee");
+            setTimeout(() => champ.focus(), 50);
+        });
+    }
+    function ouvrirModaleAlerte(message) {
+        return new Promise((resolve) => {
+            resolveModale = resolve;
+            document.getElementById("modaleTitre").textContent = "Information";
+            document.getElementById("modaleMessage").textContent = message;
+            document.getElementById("modaleChampSaisie").style.display = "none";
+            document.getElementById("modaleBoutonConfirmer").textContent = "OK";
+            document.getElementById("modaleBoutonConfirmer").className = "action";
+            document.getElementById("modaleBoutonAnnuler").style.display = "none";
+            document.getElementById("modalGenerique").classList.remove("cachee");
+        });
+    }
+    window.validerModale = function() {
+        const champ = document.getElementById("modaleChampSaisie");
+        const valeur = champ.style.display !== "none" ? champ.value : true;
+        document.getElementById("modalGenerique").classList.add("cachee");
+        if (resolveModale) resolveModale(valeur);
+        resolveModale = null;
+    };
+    window.annulerModale = function() {
+        const champ = document.getElementById("modaleChampSaisie");
+        const valeur = champ.style.display !== "none" ? null : false;
+        document.getElementById("modalGenerique").classList.add("cachee");
+        if (resolveModale) resolveModale(valeur);
+        resolveModale = null;
+    };
+    document.getElementById("modaleChampSaisie").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") window.validerModale();
+        if (e.key === "Escape") window.annulerModale();
+    });
+
+    function etatVide(emoji, texte) {
+        return `<div class="etat-vide"><span class="emoji-vide">${emoji}</span><p>${texte}</p></div>`;
+    }
+
+    /* ================= UTILITAIRES CODES ================= */
+    function genererCodeMaison() {
+        const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+        let code = "";
+        for (let i = 0; i < 8; i++) code += alphabet[Math.floor(Math.random() * alphabet.length)];
+        return code;
+    }
+    function formaterCodeMaison(code) {
+        return code.slice(0, 4) + "-" + code.slice(4);
+    }
+    function nettoyerCodeMaison(saisie) {
+        return saisie.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    }
+    function masquerTousLesEcrans() {
+        document.getElementById("ecranAuth").classList.add("cachee");
+        document.getElementById("ecranMesMaisons").classList.add("cachee");
+        document.getElementById("ecranEnfant").classList.add("cachee");
+        document.getElementById("appLayout").classList.add("cachee");
+    }
+
+    /* ================= AUTHENTIFICATION ================= */
+    window.basculerModeAuth = function() {
+        modeAuthInscription = !modeAuthInscription;
+        document.getElementById("titreAuth").textContent = modeAuthInscription ? "Crée ton compte" : "Connecte-toi à ton compte";
+        document.getElementById("boutonAuth").textContent = modeAuthInscription ? "Créer mon compte" : "Se connecter";
+        document.getElementById("champPrenomAuth").style.display = modeAuthInscription ? "block" : "none";
+        document.getElementById("texteToggleAuth").textContent = modeAuthInscription ? "Déjà un compte ?" : "Pas encore de compte ?";
+        document.getElementById("boutonToggleAuth").textContent = modeAuthInscription ? "Se connecter" : "Créer un compte";
+        document.getElementById("erreurAuth").textContent = "";
+    };
+
+    window.validerAuth = async function() {
+        const email = document.getElementById("authEmail").value.trim();
+        const motDePasse = document.getElementById("authMotDePasse").value;
+        const prenom = document.getElementById("authPrenom").value.trim();
+        const erreur = document.getElementById("erreurAuth");
         erreur.textContent = "";
-        if (!idChoisi) { erreur.textContent = "Choisis une maison."; return; }
-        const snap = await getDoc(doc(db, "maisons", idChoisi));
-        if (!snap.exists()) { erreur.textContent = "Maison introuvable."; return; }
+        if (!email || !motDePasse) { erreur.textContent = "Merci de remplir l'email et le mot de passe."; return; }
+        if (modeAuthInscription && !prenom) { erreur.textContent = "Merci de renseigner ton prénom."; return; }
+        try {
+            if (modeAuthInscription) {
+                const identifiants = await createUserWithEmailAndPassword(auth, email, motDePasse);
+                await updateProfile(identifiants.user, { displayName: prenom });
+            } else {
+                await signInWithEmailAndPassword(auth, email, motDePasse);
+            }
+        } catch (e) {
+            erreur.textContent = messageErreurAuth(e.code);
+        }
+    };
+
+    function messageErreurAuth(codeErreur) {
+        const messages = {
+            "auth/email-already-in-use": "Un compte existe déjà avec cet email.",
+            "auth/invalid-email": "Adresse email invalide.",
+            "auth/weak-password": "Le mot de passe doit faire au moins 6 caractères.",
+            "auth/invalid-credential": "Email ou mot de passe incorrect.",
+            "auth/wrong-password": "Email ou mot de passe incorrect.",
+            "auth/user-not-found": "Aucun compte ne correspond à cet email.",
+            "auth/too-many-requests": "Trop de tentatives, réessaie dans un instant.",
+            "auth/configuration-not-found": "La connexion par email n'est pas encore activée sur ce projet Firebase (Authentication → Sign-in method)."
+        };
+        return messages[codeErreur] || "Une erreur est survenue, réessaie.";
+    }
+
+    window.motDePasseOublie = async function() {
+        const email = document.getElementById("authEmail").value.trim();
+        const erreur = document.getElementById("erreurAuth");
+        if (!email) { erreur.textContent = "Renseigne ton email ci-dessus, puis clique à nouveau ici."; return; }
+        try {
+            await sendPasswordResetEmail(auth, email);
+            await ouvrirModaleAlerte("Un email pour réinitialiser ton mot de passe vient de t'être envoyé.");
+        } catch (e) {
+            erreur.textContent = messageErreurAuth(e.code);
+        }
+    };
+
+    window.seDeconnecter = async function() {
+        localStorage.removeItem("maisonId"); localStorage.removeItem("maisonNom");
+        localStorage.removeItem("role"); localStorage.removeItem("enfantId"); localStorage.removeItem("enfantNom");
+        detacherEcoutes();
+        await signOut(auth);
+    };
+
+    /* ================= MES MAISONS (parent) ================= */
+    window.afficherMesMaisons = async function() {
+        masquerTousLesEcrans();
+        document.getElementById("ecranMesMaisons").classList.remove("cachee");
+        const conteneur = document.getElementById("listeMesMaisons");
+        conteneur.innerHTML = `<p class="erreur-code" style="color:var(--ink-soft);">Chargement…</p>`;
+        const q = query(collection(db, "maisons"), where("membres", "array-contains", auth.currentUser.uid));
+        const snap = await getDocs(q);
+        if (snap.empty) {
+            conteneur.innerHTML = etatVide("🏡", "Tu n'as pas encore de maison. Crées-en une ci-dessous !");
+            return;
+        }
+        conteneur.innerHTML = "";
+        snap.forEach(d => {
+            const data = d.data();
+            const item = document.createElement("div");
+            item.className = "carte-maison-item";
+            item.innerHTML = `
+                <p class="nom-maison-item">${data.nom}</p>
+                <button class="action" style="padding:9px 16px;">Entrer</button>
+            `;
+            item.querySelector("button").onclick = () => entrerDansMaison(d.id, data.nom, "parent");
+            conteneur.appendChild(item);
+        });
+    };
+
+    window.creerMaison = async function() {
+        const nom = document.getElementById("nomNouvelleMaison").value.trim();
+        const codeEnfant = document.getElementById("codeEnfantNouvelleMaison").value.trim();
+        if (!nom || !codeEnfant) { await ouvrirModaleAlerte("Merci de renseigner un nom et un code enfant."); return; }
+
+        let code, refMaison, existe = true;
+        for (let tentative = 0; tentative < 6 && existe; tentative++) {
+            code = genererCodeMaison();
+            refMaison = doc(db, "maisons", code);
+            const snap = await getDoc(refMaison);
+            existe = snap.exists();
+        }
+        await setDoc(refMaison, {
+            nom, proprietaireUid: auth.currentUser.uid,
+            membres: [auth.currentUser.uid], dateCreation: Date.now()
+        });
+        await setDoc(doc(db, "maisons", code, "prive", "secrets"), { codeEnfant });
+
+        await ouvrirModaleConfirmation({
+            titre: "Maison créée !",
+            message: `Voici le code de "${nom}" : ${formaterCodeMaison(code)}\n\nPartage-le avec les autres parents (pour qu'ils rejoignent) et avec tes enfants (avec le code enfant que tu as choisi).`,
+            texteConfirmer: "C'est noté", texteAnnuler: ""
+        });
+        document.getElementById("modaleBoutonAnnuler").style.display = "none";
+
+        entrerDansMaison(code, nom, "parent");
+    };
+
+    window.rejoindreMaisonParent = async function() {
+        const code = nettoyerCodeMaison(document.getElementById("rejoindreMaisonCode").value);
+        if (!code) return;
+        const refMaison = doc(db, "maisons", code);
+        const snap = await getDoc(refMaison);
+        if (!snap.exists()) { await ouvrirModaleAlerte("Aucune maison ne correspond à ce code."); return; }
         const data = snap.data();
-        if (code !== "" && code === data.codeParent) {
-            finaliserAcces(idChoisi, data.nom, "parent", null, null);
-        } else if (code !== "" && code === data.codeEnfant) {
-            await afficherChoixEnfant(idChoisi, data.nom);
-        } else {
+        if ((data.membres || []).includes(auth.currentUser.uid)) {
+            entrerDansMaison(code, data.nom, "parent");
+            return;
+        }
+        const confirme = await ouvrirModaleConfirmation({
+            titre: "Rejoindre cette maison ?",
+            message: `Tu es sur le point de rejoindre "${data.nom}" en tant que parent, avec un accès complet.`,
+            texteConfirmer: "Rejoindre"
+        });
+        if (!confirme) return;
+        await updateDoc(refMaison, { membres: arrayUnion(auth.currentUser.uid) });
+        entrerDansMaison(code, data.nom, "parent");
+    };
+
+    window.ouvrirEcranMesMaisonsDepuisApp = function() {
+        changerDeMaison();
+        setTimeout(() => document.getElementById("nomNouvelleMaison")?.focus(), 150);
+    };
+
+    /* ================= ACCES ENFANT ================= */
+    window.ouvrirEcranEnfant = function() {
+        masquerTousLesEcrans();
+        document.getElementById("ecranEnfant").classList.remove("cachee");
+        document.getElementById("blocEnfantCode").style.display = "block";
+        document.getElementById("blocEnfantIdentite").style.display = "none";
+        document.getElementById("erreurCodeEnfant").textContent = "";
+    };
+    window.retourAuth = function() {
+        masquerTousLesEcrans();
+        document.getElementById("ecranAuth").classList.remove("cachee");
+    };
+
+    window.verifierCodeEnfant = async function() {
+        const codeMaisonSaisi = nettoyerCodeMaison(document.getElementById("enfantCodeMaison").value);
+        const codeEnfant = document.getElementById("enfantCodePin").value.trim();
+        const erreur = document.getElementById("erreurCodeEnfant");
+        erreur.textContent = "";
+        if (!codeMaisonSaisi || !codeEnfant) { erreur.textContent = "Merci de remplir les deux codes."; return; }
+        try {
+            if (!auth.currentUser) await signInAnonymously(auth);
+            const uid = auth.currentUser.uid;
+            await setDoc(doc(db, "maisons", codeMaisonSaisi, "enfantsVerifies", uid), {
+                codeSaisi: codeEnfant, dateVerification: Date.now()
+            });
+            const maisonSnap = await getDoc(doc(db, "maisons", codeMaisonSaisi));
+            await afficherChoixEnfant(codeMaisonSaisi, maisonSnap.data().nom);
+        } catch (e) {
             erreur.textContent = "Code incorrect, réessaie.";
         }
     };
 
-    async function afficherChoixEnfant(idMaison, nomMaison) {
-        const enfantsSnap = await getDocs(collection(db, "maisons", idMaison, "enfants"));
+    async function afficherChoixEnfant(codeMaisonVerifie, nomMaison) {
+        const enfantsSnap = await getDocs(collection(db, "maisons", codeMaisonVerifie, "enfants"));
         const select = document.getElementById("selectEnfantIdentite");
         select.innerHTML = "";
         if (enfantsSnap.empty) {
-            select.innerHTML = `<option value="">Aucun enfant enregistré</option>`;
+            select.innerHTML = `<option value="">Aucun enfant enregistré pour l'instant</option>`;
         } else {
             enfantsSnap.forEach(d => {
                 const option = document.createElement("option");
@@ -457,36 +861,25 @@
                 select.appendChild(option);
             });
         }
-        const bloc = document.getElementById("blocChoixEnfant");
-        bloc.dataset.maisonId = idMaison;
+        const bloc = document.getElementById("blocEnfantIdentite");
+        bloc.dataset.maisonId = codeMaisonVerifie;
         bloc.dataset.maisonNom = nomMaison;
-        document.getElementById("blocRejoindre").style.display = "none";
+        document.getElementById("blocEnfantCode").style.display = "none";
         bloc.style.display = "block";
     }
 
     window.confirmerIdentiteEnfant = function() {
-        const bloc = document.getElementById("blocChoixEnfant");
+        const bloc = document.getElementById("blocEnfantIdentite");
         const select = document.getElementById("selectEnfantIdentite");
         if (!select.value) return;
         const enfantNom = select.options[select.selectedIndex].textContent;
-        finaliserAcces(bloc.dataset.maisonId, bloc.dataset.maisonNom, "enfant", select.value, enfantNom);
+        entrerDansMaison(bloc.dataset.maisonId, bloc.dataset.maisonNom, "enfant", select.value, enfantNom);
     };
 
-    window.creerMaison = async function() {
-        const nom = document.getElementById("nouveauNomMaison").value.trim();
-        const codeParent = document.getElementById("nouveauCodeParent").value.trim();
-        const codeEnfant = document.getElementById("nouveauCodeEnfant").value.trim();
-        if (nom === "" || codeParent === "" || codeEnfant === "") {
-            alert("Merci de renseigner un nom et les deux codes.");
-            return;
-        }
-        const ref = await addDoc(collection(db, "maisons"), { nom, codeParent, codeEnfant, dateCreation: Date.now() });
-        finaliserAcces(ref.id, nom, "parent", null, null);
-    };
-
-    function finaliserAcces(idMaison, nomMaison, roleChoisi, enfantId, enfantNom) {
-        localStorage.setItem("maisonId", idMaison);
-        localStorage.setItem("maisonNom", nomMaison);
+    /* ================= ENTREE / SORTIE D'UNE MAISON ================= */
+    function entrerDansMaison(id, nom, roleChoisi, enfantId = null, enfantNom = null) {
+        localStorage.setItem("maisonId", id);
+        localStorage.setItem("maisonNom", nom);
         localStorage.setItem("role", roleChoisi);
         if (enfantId) {
             localStorage.setItem("enfantId", enfantId);
@@ -495,38 +888,55 @@
             localStorage.removeItem("enfantId");
             localStorage.removeItem("enfantNom");
         }
-        location.reload();
+        demarrerApp();
     }
 
-    window.supprimerMaison = async function() {
-        const premiereConfirmation = confirm(
-            `Es-tu sûr de vouloir supprimer définitivement "${maisonNom}" ?\n\nToutes les données (courses, planning, tâches) seront perdues pour toujours. Cette action est irréversible.`
-        );
-        if (!premiereConfirmation) return;
+    window.changerDeMaison = function() {
+        localStorage.removeItem("maisonId"); localStorage.removeItem("maisonNom");
+        localStorage.removeItem("role"); localStorage.removeItem("enfantId"); localStorage.removeItem("enfantNom");
+        detacherEcoutes();
+        if (auth.currentUser && auth.currentUser.isAnonymous) {
+            window.ouvrirEcranEnfant();
+        } else {
+            window.afficherMesMaisons();
+        }
+    };
 
-        const saisie = prompt(`Pour confirmer, retape le nom exact de la maison : "${maisonNom}"`);
+    window.supprimerMaisonAction = async function() {
+        const confirme1 = await ouvrirModaleConfirmation({
+            titre: "Supprimer définitivement ?",
+            message: `Toutes les données de "${maisonNom}" (courses, planning, tâches) seront perdues pour toujours. Cette action est irréversible.`,
+            texteConfirmer: "Continuer", danger: true
+        });
+        if (!confirme1) return;
+        const saisie = await ouvrirModaleSaisie({
+            titre: "Confirmation finale",
+            message: `Retape le nom exact de la maison pour confirmer : "${maisonNom}"`,
+            placeholder: maisonNom
+        });
         if (saisie !== maisonNom) {
-            alert("Le nom ne correspond pas, la suppression a été annulée.");
+            if (saisie !== null) await ouvrirModaleAlerte("Le nom ne correspond pas, la suppression a été annulée.");
             return;
         }
-
-        const sousCollections = ["coursesSemaine", "achatsSpecifiques", "enfants", "taches"];
+        const sousCollections = ["coursesSemaine", "achatsSpecifiques", "enfants", "taches", "enfantsVerifies"];
         for (const nomCollection of sousCollections) {
             const snap = await getDocs(collection(db, "maisons", maisonId, nomCollection));
-            const suppressions = [];
-            snap.forEach(d => suppressions.push(deleteDoc(d.ref)));
-            await Promise.all(suppressions);
+            await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
         }
         await deleteDoc(doc(db, "maisons", maisonId, "meta", "coursesSemaine")).catch(() => {});
+        await deleteDoc(doc(db, "maisons", maisonId, "prive", "secrets")).catch(() => {});
         await deleteDoc(doc(db, "maisons", maisonId));
-
-        localStorage.removeItem("maisonId");
-        localStorage.removeItem("maisonNom");
-        localStorage.removeItem("role");
-        localStorage.removeItem("enfantId");
-        localStorage.removeItem("enfantNom");
-        location.reload();
+        window.changerDeMaison();
     };
+
+    window.toggleMenuMobile = function() {
+        document.getElementById("menuMobilePanneau").classList.toggle("cachee");
+    };
+    document.addEventListener("click", (e) => {
+        const conteneur = document.querySelector(".menu-mobile-conteneur");
+        const panneau = document.getElementById("menuMobilePanneau");
+        if (conteneur && !conteneur.contains(e.target)) panneau.classList.add("cachee");
+    });
 
     function getIdSemaineActuelle() {
         const d = new Date();
@@ -543,30 +953,31 @@
         const semaineActuelle = getIdSemaineActuelle();
         if (!metaSnap.exists() || metaSnap.data().semaine !== semaineActuelle) {
             const items = await getDocs(collection(db, "maisons", maisonId, "coursesSemaine"));
-            const suppressions = [];
-            items.forEach(d => suppressions.push(deleteDoc(d.ref)));
-            await Promise.all(suppressions);
+            await Promise.all(items.docs.map(d => deleteDoc(d.ref)));
             await setDoc(metaRef, { semaine: semaineActuelle });
         }
     }
 
-    async function initMaison(id, nom) {
-        maisonId = id;
-        maisonNom = nom;
+    async function demarrerApp() {
+        maisonId = localStorage.getItem("maisonId");
+        maisonNom = localStorage.getItem("maisonNom");
         role = localStorage.getItem("role") || "parent";
         enfantIdActuel = localStorage.getItem("enfantId") || null;
         enfantNomActuel = localStorage.getItem("enfantNom") || null;
 
+        masquerTousLesEcrans();
+        document.getElementById("appLayout").classList.remove("cachee");
+
         document.body.classList.toggle("role-enfant", role === "enfant");
-        const libelle = role === "enfant" ? `${nom} — ${enfantNomActuel}` : `${nom} — Parent`;
+        const libelle = role === "enfant" ? `${maisonNom} — ${enfantNomActuel}` : `${maisonNom} — Parent`;
         document.getElementById("nomMaisonActuelle").textContent = "🏠 " + libelle;
-        document.getElementById("ecranMaison").classList.add("cachee");
+        document.getElementById("nomMaisonMobile").textContent = "🏠 " + libelle;
         document.getElementById("blocMesTaches").style.display = role === "enfant" ? "block" : "none";
 
         const champDate = document.getElementById("tacheDate");
         if (champDate) champDate.value = new Date().toISOString().slice(0, 10);
 
-        await verifierResetSemaine();
+        if (role === "parent") await verifierResetSemaine();
 
         refCoursesSemaine = collection(db, "maisons", maisonId, "coursesSemaine");
         refSpecifiques = collection(db, "maisons", maisonId, "achatsSpecifiques");
@@ -578,10 +989,10 @@
         demarrerEcouteEnfants();
         demarrerEcouteTaches();
 
-        setInterval(verifierExpirationSpecifiques, 60000);
+        if (role === "parent") intervalleExpiration = setInterval(verifierExpirationSpecifiques, 60000);
     }
 
-    /* ================= COURSES : SEMAINE (par catégorie) ================= */
+    /* ================= COURSES : SEMAINE (par categorie) ================= */
     const CATEGORIES = {
         fruits_legumes: "🥦 Fruits & Légumes",
         viandes_poissons: "🥩 Viandes & Poissons",
@@ -635,46 +1046,51 @@
     };
 
     function demarrerEcouteCoursesSemaine() {
-        onSnapshot(refCoursesSemaine, (snapshot) => {
+        const desabonner = onSnapshot(refCoursesSemaine, (snapshot) => {
             const conteneur = document.getElementById("listeSemaine");
             conteneur.innerHTML = "";
             const articles = [];
             snapshot.forEach((d) => articles.push({ id: d.id, ...d.data() }));
             articles.sort((a, b) => a.dateAjout - b.dateAjout);
 
-            ORDRE_CATEGORIES.forEach(cat => {
-                const articlesCat = articles.filter(a => (a.categorie || "autre") === cat);
-                if (articlesCat.length === 0) return;
-                const groupe = document.createElement("div");
-                groupe.className = "groupe-categorie";
-                let items = "";
-                articlesCat.forEach(article => {
-                    items += `
-                        <li class="${article.achete ? 'achete' : ''}">
-                            <div class="gauche">
-                                <input type="checkbox" ${article.achete ? "checked" : ""}
-                                       onchange="toggleAcheteSemaine('${article.id}', ${article.achete})">
-                                <span class="nom-article">${article.nom}</span>
-                                ${article.quantite ? `<span class="quantite-badge">${article.quantite}</span>` : ""}
-                            </div>
-                            <button class="supprimer parent-seulement" onclick="supprimerArticleSemaine('${article.id}')">✕</button>
-                        </li>
-                    `;
+            if (articles.length === 0) {
+                conteneur.innerHTML = etatVide("🧺", "Liste de courses vide pour l'instant.");
+            } else {
+                ORDRE_CATEGORIES.forEach(cat => {
+                    const articlesCat = articles.filter(a => (a.categorie || "autre") === cat);
+                    if (articlesCat.length === 0) return;
+                    const groupe = document.createElement("div");
+                    groupe.className = "groupe-categorie";
+                    let items = "";
+                    articlesCat.forEach(article => {
+                        items += `
+                            <li class="${article.achete ? 'achete' : ''}">
+                                <div class="gauche">
+                                    <input type="checkbox" ${article.achete ? "checked" : ""}
+                                           onchange="toggleAcheteSemaine('${article.id}', ${article.achete})">
+                                    <span class="nom-article">${article.nom}</span>
+                                    ${article.quantite ? `<span class="quantite-badge">${article.quantite}</span>` : ""}
+                                </div>
+                                <button class="supprimer parent-seulement" onclick="supprimerArticleSemaine('${article.id}')">✕</button>
+                            </li>
+                        `;
+                    });
+                    groupe.innerHTML = `<h3>${CATEGORIES[cat]}</h3><ul>${items}</ul>`;
+                    conteneur.appendChild(groupe);
                 });
-                groupe.innerHTML = `<h3>${CATEGORIES[cat]}</h3><ul>${items}</ul>`;
-                conteneur.appendChild(groupe);
-            });
+            }
 
             window._compteurSemaine = articles.filter(a => !a.achete).length;
             majCompteurCourses();
         });
+        desabonnements.push(desabonner);
     }
 
     document.getElementById("semaineNom").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") ajouterArticleSemaine();
+        if (e.key === "Enter") window.ajouterArticleSemaine();
     });
 
-    /* ================= COURSES : ACHATS SPÉCIFIQUES ================= */
+    /* ================= COURSES : ACHATS SPECIFIQUES ================= */
     window.ajouterArticleSpecifique = async function() {
         const nomInput = document.getElementById("specifiqueNom");
         const noteInput = document.getElementById("specifiqueNote");
@@ -699,34 +1115,50 @@
     };
 
     function demarrerEcouteSpecifiques() {
-        onSnapshot(refSpecifiques, (snapshot) => {
+        const desabonner = onSnapshot(refSpecifiques, (snapshot) => {
             specifiquesActuels = [];
             snapshot.forEach((d) => specifiquesActuels.push({ id: d.id, ...d.data() }));
             specifiquesActuels.sort((a, b) => a.dateAjout - b.dateAjout);
 
             const liste = document.getElementById("listeSpecifiques");
-            liste.innerHTML = "";
-            specifiquesActuels.forEach((article) => {
-                const li = document.createElement("li");
-                if (article.achete) li.classList.add("achete");
-                li.innerHTML = `
-                    <div class="gauche">
-                        <input type="checkbox" ${article.achete ? "checked" : ""}
-                               onchange="toggleAcheteSpecifique('${article.id}', ${article.achete})">
-                        <div>
-                            <span class="nom-article">${article.nom}</span>
-                            ${article.note ? `<span class="note-article">${article.note}</span>` : ""}
-                            ${article.achete ? `<span class="note-article">Sera supprimé automatiquement dans l'heure</span>` : ""}
+            if (specifiquesActuels.length === 0) {
+                liste.outerHTML = etatVide("🎁", "Aucun achat spécifique en attente.").replace("<div", `<div id="listeSpecifiques" `);
+            } else {
+                if (!document.getElementById("listeSpecifiques")) {
+                    // reconstruire une ul si elle avait ete remplacee par l'etat vide
+                    const specifiquesSection = document.getElementById("specifiques");
+                    const anciennEtatVide = specifiquesSection.querySelector(".etat-vide");
+                    if (anciennEtatVide) {
+                        const nouvelleUl = document.createElement("ul");
+                        nouvelleUl.id = "listeSpecifiques";
+                        anciennEtatVide.replaceWith(nouvelleUl);
+                    }
+                }
+                const liste2 = document.getElementById("listeSpecifiques");
+                liste2.innerHTML = "";
+                specifiquesActuels.forEach((article) => {
+                    const li = document.createElement("li");
+                    if (article.achete) li.classList.add("achete");
+                    li.innerHTML = `
+                        <div class="gauche">
+                            <input type="checkbox" ${article.achete ? "checked" : ""}
+                                   onchange="toggleAcheteSpecifique('${article.id}', ${article.achete})">
+                            <div>
+                                <span class="nom-article">${article.nom}</span>
+                                ${article.note ? `<span class="note-article">${article.note}</span>` : ""}
+                                ${article.achete ? `<span class="note-article">Sera supprimé automatiquement dans l'heure</span>` : ""}
+                            </div>
                         </div>
-                    </div>
-                    <button class="supprimer parent-seulement" onclick="supprimerArticleSpecifique('${article.id}')">✕</button>
-                `;
-                liste.appendChild(li);
-            });
+                        <button class="supprimer parent-seulement" onclick="supprimerArticleSpecifique('${article.id}')">✕</button>
+                    `;
+                    liste2.appendChild(li);
+                });
+            }
 
             window._compteurSpecifiques = specifiquesActuels.filter(a => !a.achete).length;
             majCompteurCourses();
         });
+        desabonnements.push(desabonner);
     }
 
     function verifierExpirationSpecifiques() {
@@ -745,7 +1177,7 @@
     }
 
     document.getElementById("specifiqueNom").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") ajouterArticleSpecifique();
+        if (e.key === "Enter") window.ajouterArticleSpecifique();
     });
 
     /* ================= SOUS-NAVIGATION COURSES ================= */
@@ -798,8 +1230,8 @@
         const fin = document.getElementById(`ajout-fin-${enfantId}`).value;
         const label = document.getElementById(`ajout-label-${enfantId}`).value.trim();
         const type = document.getElementById(`ajout-type-${enfantId}`).value;
-        if (!debut || !fin || label === "") { alert("Merci de renseigner l'heure de début, de fin et le nom."); return; }
-        if (heureVersMinutes(fin) <= heureVersMinutes(debut)) { alert("L'heure de fin doit être après l'heure de début."); return; }
+        if (!debut || !fin || label === "") { await ouvrirModaleAlerte("Merci de renseigner l'heure de début, de fin et le nom."); return; }
+        if (heureVersMinutes(fin) <= heureVersMinutes(debut)) { await ouvrirModaleAlerte("L'heure de fin doit être après l'heure de début."); return; }
         const enfant = enfantsActuels.find(e => e.id === enfantId);
         const nouvelEvenement = { id: genererId(), jour, debut, fin, label, type };
         const nouveauxEvenements = [...(enfant.evenements || []), nouvelEvenement];
@@ -829,8 +1261,8 @@
         const fin = document.getElementById(`edit-fin-${enfantId}`).value;
         const label = document.getElementById(`edit-label-${enfantId}`).value.trim();
         const type = document.getElementById(`edit-type-${enfantId}`).value;
-        if (!debut || !fin || label === "") { alert("Merci de renseigner l'heure de début, de fin et le nom."); return; }
-        if (heureVersMinutes(fin) <= heureVersMinutes(debut)) { alert("L'heure de fin doit être après l'heure de début."); return; }
+        if (!debut || !fin || label === "") { await ouvrirModaleAlerte("Merci de renseigner l'heure de début, de fin et le nom."); return; }
+        if (heureVersMinutes(fin) <= heureVersMinutes(debut)) { await ouvrirModaleAlerte("L'heure de fin doit être après l'heure de début."); return; }
         const enfant = enfantsActuels.find(e => e.id === enfantId);
         const nouveauxEvenements = enfant.evenements.map(ev =>
             ev.id === evenementId ? { id: evenementId, jour, debut, fin, label, type } : ev
@@ -899,6 +1331,11 @@
     }
     function renderEnfants() {
         const conteneur = document.getElementById("listeEnfants");
+        if (enfantsActuels.length === 0) {
+            conteneur.innerHTML = etatVide("👧🧒", "Aucun enfant ajouté au planning pour l'instant.");
+            document.getElementById("compteurEnfants").textContent = 0;
+            return;
+        }
         conteneur.innerHTML = "";
         enfantsActuels.forEach((enfant) => {
             const carte = document.createElement("div");
@@ -935,15 +1372,16 @@
         if (valeurActuelle) select.value = valeurActuelle;
     }
     function demarrerEcouteEnfants() {
-        onSnapshot(refEnfants, (snapshot) => {
+        const desabonner = onSnapshot(refEnfants, (snapshot) => {
             enfantsActuels = [];
             snapshot.forEach((d) => enfantsActuels.push({ id: d.id, ...d.data() }));
             renderEnfants();
             remplirSelectTacheEnfant();
         });
+        desabonnements.push(desabonner);
     }
 
-    /* ================= TÂCHES MÉNAGÈRES ================= */
+    /* ================= TACHES MENAGERES ================= */
     function formatDateFr(dateStr) {
         const [y, m, d] = dateStr.split("-");
         return `${d}/${m}`;
@@ -968,7 +1406,7 @@
         const enfantNom = enfantSelect.options[enfantSelect.selectedIndex] ? enfantSelect.options[enfantSelect.selectedIndex].textContent : "";
         const date = document.getElementById("tacheDate").value;
         const heureLimite = document.getElementById("tacheHeure").value;
-        if (!nom || !enfantId || !date || !heureLimite) { alert("Merci de remplir tous les champs (y compris un enfant du Planning)."); return; }
+        if (!nom || !enfantId || !date || !heureLimite) { await ouvrirModaleAlerte("Merci de remplir tous les champs (y compris un enfant du Planning)."); return; }
         await addDoc(refTaches, { nom, enfantId, enfantNom, date, heureLimite, fait: false, dateFait: null, dateCreation: Date.now() });
         document.getElementById("tacheNom").value = "";
     };
@@ -988,25 +1426,37 @@
 
         const conteneurParent = document.getElementById("listeTachesParent");
         if (conteneurParent) {
-            conteneurParent.innerHTML = "";
             const tachesTriees = [...tachesDuMois].sort((a, b) => (a.date + a.heureLimite).localeCompare(b.date + b.heureLimite));
-            tachesTriees.forEach(t => {
-                const retard = estEnRetard(t);
-                const li = document.createElement("li");
-                li.innerHTML = `
-                    <div class="gauche">
-                        <span class="badge-statut ${t.fait ? 'statut-fait' : (retard ? 'statut-retard' : 'statut-attente')}">
-                            ${t.fait ? "Fait" : (retard ? "En retard" : "À faire")}
-                        </span>
-                        <div>
-                            <span class="nom-article">${t.nom}</span>
-                            <span class="note-article">${t.enfantNom} — ${formatDateFr(t.date)} avant ${t.heureLimite}</span>
+            if (tachesTriees.length === 0) {
+                conteneurParent.outerHTML = etatVide("🧹", "Aucune tâche assignée ce mois-ci.").replace("<div", `<div id="listeTachesParent-vide" `);
+            } else {
+                let cible = document.getElementById("listeTachesParent");
+                if (!cible) {
+                    const remplacant = document.getElementById("listeTachesParent-vide");
+                    const nouvelleUl = document.createElement("ul");
+                    nouvelleUl.id = "listeTachesParent";
+                    remplacant.replaceWith(nouvelleUl);
+                    cible = nouvelleUl;
+                }
+                cible.innerHTML = "";
+                tachesTriees.forEach(t => {
+                    const retard = estEnRetard(t);
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        <div class="gauche">
+                            <span class="badge-statut ${t.fait ? 'statut-fait' : (retard ? 'statut-retard' : 'statut-attente')}">
+                                ${t.fait ? "Fait" : (retard ? "En retard" : "À faire")}
+                            </span>
+                            <div>
+                                <span class="nom-article">${t.nom}</span>
+                                <span class="note-article">${t.enfantNom} — ${formatDateFr(t.date)} avant ${t.heureLimite}</span>
+                            </div>
                         </div>
-                    </div>
-                    <button class="supprimer" onclick="supprimerTache('${t.id}')">✕</button>
-                `;
-                conteneurParent.appendChild(li);
-            });
+                        <button class="supprimer" onclick="supprimerTache('${t.id}')">✕</button>
+                    `;
+                    cible.appendChild(li);
+                });
+            }
         }
 
         const conteneurMes = document.getElementById("listeMesTaches");
@@ -1047,19 +1497,21 @@
     }
 
     function demarrerEcouteTaches() {
-        onSnapshot(refTaches, (snapshot) => {
+        const desabonner = onSnapshot(refTaches, (snapshot) => {
             tachesActuelles = [];
             snapshot.forEach(d => tachesActuelles.push({ id: d.id, ...d.data() }));
             renderTaches();
         });
+        desabonnements.push(desabonner);
     }
 
     /* ================= NAVIGATION PRINCIPALE ================= */
-    window.changerOnglet = function(nom, btn) {
+    window.changerOnglet = function(nom) {
         document.querySelectorAll(".onglet").forEach(el => el.classList.remove("actif"));
-        document.querySelectorAll("aside nav button").forEach(el => el.classList.remove("actif"));
+        document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("actif"));
         document.getElementById(nom).classList.add("actif");
-        btn.classList.add("actif");
+        document.querySelectorAll(`.nav-btn[data-tab="${nom}"]`).forEach(el => el.classList.add("actif"));
+        document.getElementById("menuMobilePanneau")?.classList.add("cachee");
     };
 
     /* ================= DATE DU JOUR ================= */
@@ -1069,15 +1521,31 @@
     document.getElementById("dateJour").textContent =
         `${nomsJours[aujourdhui.getDay()]} ${aujourdhui.getDate()} ${nomsMois[aujourdhui.getMonth()]}`;
 
-    /* ================= DÉMARRAGE ================= */
-    const maisonSauvegardeeId = localStorage.getItem("maisonId");
-    const maisonSauvegardeeNom = localStorage.getItem("maisonNom");
-    if (maisonSauvegardeeId) {
-        initMaison(maisonSauvegardeeId, maisonSauvegardeeNom);
-    } else {
-        chargerListeMaisons();
-        document.getElementById("boutonFermerEcran").style.display = "none";
-    }
+    /* ================= DEMARRAGE : REPARTITION SELON L'ETAT D'AUTHENTIFICATION ================= */
+    onAuthStateChanged(auth, (user) => {
+        detacherEcoutes();
+        masquerTousLesEcrans();
+
+        if (!user) {
+            localStorage.removeItem("maisonId"); localStorage.removeItem("maisonNom");
+            localStorage.removeItem("role"); localStorage.removeItem("enfantId"); localStorage.removeItem("enfantNom");
+            document.getElementById("ecranAuth").classList.remove("cachee");
+            return;
+        }
+
+        const maisonSauvegardee = localStorage.getItem("maisonId");
+        const roleSauvegarde = localStorage.getItem("role");
+        if (maisonSauvegardee && roleSauvegarde) {
+            demarrerApp();
+            return;
+        }
+
+        if (user.isAnonymous) {
+            window.ouvrirEcranEnfant();
+        } else {
+            window.afficherMesMaisons();
+        }
+    });
 </script>
 </body>
 </html>
